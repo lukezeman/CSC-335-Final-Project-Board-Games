@@ -1,4 +1,4 @@
-package yahtzee.controller;
+package yahtzee;
 
 public class YahtzeeController {
 

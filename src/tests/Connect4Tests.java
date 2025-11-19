@@ -1,10 +1,10 @@
-package checkers.tests;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class CheckersTests {
+class Connect4Tests {
 
 	@Test
 	void test() {

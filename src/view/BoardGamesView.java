@@ -13,6 +13,7 @@ public class BoardGamesView extends Application {
 	// we will call the other games' respective view.
 	@Override
 	public void start(Stage stage) throws Exception {
+		System.out.println("Stuff happened!");
 		// Filler code for now.
 		BorderPane borderPane = new BorderPane();
 		Label label = new Label("Hello JavaFX!");

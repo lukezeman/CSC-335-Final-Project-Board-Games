@@ -1,4 +1,4 @@
-package yahtzee.model;
+package yahtzee;
 
 import java.util.Observable;
 

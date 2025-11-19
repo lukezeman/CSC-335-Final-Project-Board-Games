@@ -1,10 +1,10 @@
-package connect4.tests;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class Connect4Tests {
+class YahtzeeTests {
 
 	@Test
 	void test() {

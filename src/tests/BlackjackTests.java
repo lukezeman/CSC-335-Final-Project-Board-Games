@@ -1,10 +1,10 @@
-package yahtzee.tests;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class YahtzeeTests {
+class BlackjackTests {
 
 	@Test
 	void test() {

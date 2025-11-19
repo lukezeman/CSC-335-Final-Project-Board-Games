@@ -1,10 +1,10 @@
-package blackjack.tests;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class BlackjackTests {
+class CheckersTests {
 
 	@Test
 	void test() {

@@ -1,4 +1,4 @@
-package checkers.controller;
+package checkers;
 
 public class CheckersController {
 
