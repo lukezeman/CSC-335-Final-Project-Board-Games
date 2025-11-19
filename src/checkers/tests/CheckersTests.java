@@ -1,0 +1,14 @@
+package checkers.tests;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+class CheckersTests {
+
+	@Test
+	void test() {
+		fail("Not yet implemented");
+	}
+
+}
