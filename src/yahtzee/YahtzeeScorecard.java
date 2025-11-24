@@ -10,11 +10,6 @@ public class YahtzeeScorecard {
 	private int lowerSection = 0;
 	private boolean upperBonusChecked = false;
 	
-//	// On loaded scorecard
-//	public YahtzeeScorecard() {
-//		
-//	}
-	
 	protected void recordScore(YahtzeeCategory category, int[] dice) {
 		int score = category.calculateScore(dice);
 		

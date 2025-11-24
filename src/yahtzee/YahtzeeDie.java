@@ -12,11 +12,6 @@ public class YahtzeeDie {
 		held = false;
 	}
 	
-	// Possibly another for loaded instance
-//	public Die() {
-//		
-//	}
-	
 	protected void roll() {
 		value = random.nextInt(6) + 1;
 	}

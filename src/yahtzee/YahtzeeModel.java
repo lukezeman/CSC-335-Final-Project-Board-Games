@@ -17,9 +17,12 @@ public class YahtzeeModel extends Observable {
 	}
 	
 	// Loaded game
-//	public YahtzeeModel() {
-//		
-//	}
+	public YahtzeeModel(YahtzeeInstance instance) {
+		this.player1 = instance.getPlayer1();
+		this.player2 = instance.getPlayer2();
+		this.currentPlayer = instance.getCurrentPlayer();
+		this.rollsRemaining = instance.getRollsRemaining();
+	}
 	
 	protected int[] rollDice() {
 		if (rollsRemaining > 0) {
@@ -101,6 +104,11 @@ public class YahtzeeModel extends Observable {
 	
 	protected YahtzeePlayer getPlayer2() {
 		return player2;
+	}
+	
+	protected void saveGame() {
+		YahtzeeInstance instance = new YahtzeeInstance(this);
+		instance.saveGame();
 	}
 	
 }
