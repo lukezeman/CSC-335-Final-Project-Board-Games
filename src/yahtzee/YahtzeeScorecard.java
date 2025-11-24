@@ -8,6 +8,7 @@ public class YahtzeeScorecard {
 	private int upperSectionBonus = 0;
 	private int upperSection = 0;
 	private int lowerSection = 0;
+	private boolean upperBonusChecked = false;
 	
 //	// On loaded scorecard
 //	public YahtzeeScorecard() {
@@ -55,10 +56,12 @@ public class YahtzeeScorecard {
 	}
 	
 	protected void checkEligibilityUpperBonus() {
-		if (upperSection >= 63 && upperSectionBonus == 0) {
+		if (!upperBonusChecked && upperSection >= 63) {
 			upperSectionBonus = 35;
 			upperSection += 35;
 		}
+		
+		upperBonusChecked = true;
 	}
 	
 	protected HashMap<YahtzeeCategory, Integer> getScores() {
@@ -79,6 +82,10 @@ public class YahtzeeScorecard {
 	
 	protected boolean isComplete() {
 		return scores.size() == 13;
+	}
+	
+	protected boolean upperBonusChecked() {
+		return upperBonusChecked;
 	}
 	
 }
