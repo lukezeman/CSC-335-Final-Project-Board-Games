@@ -2,12 +2,12 @@ package yahtzee;
 
 import java.util.Random;
 
-public class Die {
+public class YahtzeeDie {
 	private int value;
 	private boolean held;
 	private Random random = new Random();
 	
-	public Die() {
+	public YahtzeeDie() {
 		roll();
 		held = false;
 	}

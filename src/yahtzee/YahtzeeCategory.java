@@ -3,7 +3,7 @@ package yahtzee;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public enum Category {
+public enum YahtzeeCategory {
 	ONES,
 	TWOS,
 	THREES,

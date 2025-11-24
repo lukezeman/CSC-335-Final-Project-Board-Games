@@ -3,7 +3,7 @@ package yahtzee;
 import java.util.HashMap;
 
 public class YahtzeeScorecard {
-	private HashMap<Category, Integer> scores = new HashMap<>();
+	private HashMap<YahtzeeCategory, Integer> scores = new HashMap<>();
 	private int yahtzeeBonus = 0;
 	private int upperSectionBonus = 0;
 	private int upperSection = 0;
@@ -14,11 +14,11 @@ public class YahtzeeScorecard {
 //		
 //	}
 	
-	protected void recordScore(Category category, int[] dice) {
+	protected void recordScore(YahtzeeCategory category, int[] dice) {
 		int score = category.calculateScore(dice);
 		
-		if (category == Category.ONES || category == Category.TWOS || category == Category.THREES ||
-			category == Category.FOURS || category == Category.FIVES || category == Category.SIXES) {
+		if (category == YahtzeeCategory.ONES || category == YahtzeeCategory.TWOS || category == YahtzeeCategory.THREES ||
+			category == YahtzeeCategory.FOURS || category == YahtzeeCategory.FIVES || category == YahtzeeCategory.SIXES) {
 			
 			upperSection += score;
 		} else {
@@ -30,11 +30,11 @@ public class YahtzeeScorecard {
 	}
 	
 	protected boolean recordBonusYahtzee(int[] dice) {
-		if (Category.YAHTZEE.calculateScore(dice) != 50) {
+		if (YahtzeeCategory.YAHTZEE.calculateScore(dice) != 50) {
 			return false;
 		}
 		
-		if (!scores.containsKey(Category.YAHTZEE) || scores.get(Category.YAHTZEE) != 50) {
+		if (!scores.containsKey(YahtzeeCategory.YAHTZEE) || scores.get(YahtzeeCategory.YAHTZEE) != 50) {
 			return false;
 		}
 		
@@ -44,14 +44,14 @@ public class YahtzeeScorecard {
 		return true;
 	}
 	
-	protected boolean isCategoryAvailable(Category category) {
+	protected boolean isCategoryAvailable(YahtzeeCategory category) {
 		return !scores.containsKey(category);
 	}
 	
 	protected boolean isUpperSectionFull() {
-		return scores.containsKey(Category.ONES) && scores.containsKey(Category.TWOS) &&
-			scores.containsKey(Category.THREES) && scores.containsKey(Category.FOURS) &&
-			scores.containsKey(Category.FIVES) && scores.containsKey(Category.SIXES);
+		return scores.containsKey(YahtzeeCategory.ONES) && scores.containsKey(YahtzeeCategory.TWOS) &&
+			scores.containsKey(YahtzeeCategory.THREES) && scores.containsKey(YahtzeeCategory.FOURS) &&
+			scores.containsKey(YahtzeeCategory.FIVES) && scores.containsKey(YahtzeeCategory.SIXES);
 	}
 	
 	protected void checkEligibilityUpperBonus() {
@@ -61,7 +61,7 @@ public class YahtzeeScorecard {
 		}
 	}
 	
-	protected HashMap<Category, Integer> getScores() {
+	protected HashMap<YahtzeeCategory, Integer> getScores() {
 		return scores;
 	}
 	
