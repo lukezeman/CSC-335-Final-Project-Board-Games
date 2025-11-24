@@ -14,17 +14,6 @@ public class YahtzeePlayer {
 		}
 	}
 	
-	// For loaded game, will load at start of turn, will not save if middle of turn
-//	public YahtzeePlayer(String name, YahtzeeScorecard scorecard) {
-//	        this.name = name;
-//	        this.scorecard = scorecard;
-//	        this.dice = new YahtzeeDie[5];
-//	        for (int i = 0; i < 5; i++) {
-//	            dice[i] = new YahtzeeDie();
-//	        }
-//	}
-	
-	
 	protected void rollAll() {
 		for (YahtzeeDie die : dice) {
 			die.roll();

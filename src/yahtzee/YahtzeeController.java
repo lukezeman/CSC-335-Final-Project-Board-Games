@@ -46,4 +46,8 @@ public class YahtzeeController {
 	protected YahtzeePlayer getPlayer2() {
 		return model.getPlayer2();
 	}
+	
+	protected void saveGame() {
+		model.saveGame();
+	}
 }
