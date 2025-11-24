@@ -203,6 +203,9 @@ public class BlackjackModel extends Observable {
 	public boolean isP2Done() {
 		return p2Done;
 	}
+	public int getTurn() {
+		return turn;
+	}
 	public String getStatus(int player) {
 		Hand h;
 		if (player == 1) {
@@ -239,20 +242,7 @@ public class BlackjackModel extends Observable {
 		}
 	}
 	public BlackjackInstance getInstance() {
-		return new BlackjackInstance(
-				d,
-				p1,
-				p2,
-				dealer,
-				p1money,
-				p2money,
-				p1bet,
-				p2bet,
-				isGameOver,
-				turn,
-				p1Done,
-				p2Done
-		);
+		return new BlackjackInstance(d,p1,p2,dealer,p1money,p2money,p1bet,p2bet,isGameOver,turn,p1Done,p2Done);
 	}
 	public void setInstance(BlackjackInstance i) {
 		d = i.getD();
@@ -267,6 +257,21 @@ public class BlackjackModel extends Observable {
 		turn = i.getTurn();
 		p1Done = i.getP1Done();
 		p2Done = i.getP2Done();
+		notifyObserversOfChange();
+	}
+	public void reset() {
+		d = new Deck();
+		p1 = new Hand();
+		p2 = new Hand();
+		dealer = new Hand();
+		p1money = 500;
+		p2money = 500;
+		p1bet = 0;
+		p2bet = 0;
+		isGameOver = false;
+		turn = 1;
+		p1Done = false;
+		p2Done = false;
 		notifyObserversOfChange();
 	}
 	private void notifyObserversOfChange() {
