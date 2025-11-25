@@ -18,11 +18,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import view.BoardGamesView;
 
 @SuppressWarnings("deprecation")
-public class BlackjackView extends Application implements Observer {
-	private BlackjackModel m;
-	private BlackjackController c;
+public class BlackjackView implements Observer {
+	private BoardGamesView menuView;
+	
+	private BlackjackModel model;
+	private BlackjackController controller;
 	
 	private Label p1cards;
 	private Label p1CardsVal;
@@ -45,6 +48,109 @@ public class BlackjackView extends Application implements Observer {
 	
 	private boolean gameOverAlertShown = false;
 	
+	private Scene scene;
+	
+	public BlackjackView(BoardGamesView menuView) {
+		this.model = new BlackjackModel();
+		this.controller = new BlackjackController(model);
+		model.addObserver(this);
+		
+		this.menuView = menuView;
+		scene = setupScene();
+		
+	}
+	
+	/*
+	 * When making your GUI, instead of setting up a stage and stuff, just
+	 * set up the scene you want in here and the BoardGamesView class will 
+	 * handle displaying this to the screen. Feel free to use the exitToMenu
+	 * methods in the menuView, as well as whatever other methods are added
+	 */
+	private Scene setupScene() {
+		
+		BorderPane root = new BorderPane();
+
+		MenuBar menuBar = new MenuBar();
+		Menu fileMenu = new Menu("File");
+		
+		MenuItem newGame = new MenuItem("New Game");
+		newGame.setOnAction(e -> {
+			controller.resetGame();
+			gameOverAlertShown = false;
+			updateDisplay();
+		});
+		
+		MenuItem exit = new MenuItem("Exit");
+		exit.setOnAction(e -> {
+			controller.saveGame();
+			menuView.exitToMenu();
+		});
+		fileMenu.getItems().addAll(newGame, new SeparatorMenuItem(), exit);
+		menuBar.getMenus().add(fileMenu);
+		
+		root.setTop(menuBar);
+		
+		VBox gameDisplay = new VBox(20);
+		gameDisplay.setAlignment(Pos.CENTER);
+		
+		VBox house = new VBox(10);
+		house.setAlignment(Pos.CENTER);
+		
+		Label dealLabel = new Label("DEALER");
+		dealerCards = new Label("Cards: ");
+		dealerValue = new Label("Value: ");
+		
+		house.getChildren().addAll(dealLabel, dealerCards, dealerValue);
+		
+		HBox players = new HBox(30);
+		players.setAlignment(Pos.CENTER);
+		
+		VBox p1Box = newVbox(1);
+		VBox p2Box = newVbox(2);
+		
+		players.getChildren().addAll(p1Box, p2Box);
+		gameDisplay.getChildren().addAll(house, players);
+		
+		root.setCenter(gameDisplay);
+		
+		VBox buttonsCol = new VBox(10);
+		buttonsCol.setAlignment(Pos.CENTER);
+		
+		HBox buttons = new HBox(10);
+		buttons.setAlignment(Pos.CENTER);
+		
+		start = new Button("Start");
+		start.setOnAction(e -> startGame());
+		start.setDisable(false);
+		
+		hit = new Button("Hit");
+		hit.setOnAction(e -> controller.hit());
+		hit.setDisable(true);
+		
+		stand = new Button("Stand");
+		stand.setOnAction(e -> controller.stand());
+		stand.setDisable(true);
+		
+		buttons.getChildren().addAll(start, hit, stand);
+		whoseTurn = new Label("Place bets");
+		status = new Label("");
+		
+		buttonsCol.getChildren().addAll(buttons, whoseTurn, status);
+		root.setBottom(buttonsCol);
+		
+		controller.loadGame();
+		Scene scene = new Scene(root, 800, 600);
+		return scene;
+	}
+	
+	public Scene getScene() {
+		return scene;
+	}
+	/*
+	 * I decided to leave your old code to preserve a record if I did something
+	 * stupid
+	 * 
+	 * 
 	@Override
 	public void start(Stage stage) {
 		m = new BlackjackModel();
@@ -131,13 +237,15 @@ public class BlackjackView extends Application implements Observer {
         
         updateDisplay();
 	}
+	*/
+	
 	private void updateDisplay() {
 		// TODO Auto-generated method stub
-		Hand dealerHand = c.getDealer();
-		Hand p1Hand = c.getP1();
-		Hand p2Hand = c.getP2();
+		Hand dealerHand = controller.getDealer();
+		Hand p1Hand = controller.getP1();
+		Hand p2Hand = controller.getP2();
 		boolean gameStart = (p1Hand.cardsInHand() > 0 || p2Hand.cardsInHand() > 0);
-		int turn = c.getTurn();
+		int turn = controller.getTurn();
 		boolean inProg = (turn != 0) && gameStart;
 		if (inProg && dealerHand.cardsInHand() > 0) {
 			dealerCards.setText("Cards: ?, " + dealerHand.getCards().get(1));
@@ -149,13 +257,13 @@ public class BlackjackView extends Application implements Observer {
 		}
 		p1cards.setText("Cards: " + formatHand(p1Hand));
 	    p1CardsVal.setText("Value: " + p1Hand.getValue());
-	    p1Money.setText("Balance: $" + c.getP1money());
+	    p1Money.setText("Balance: $" + controller.getP1money());
 	    
 	    p2cards.setText("Cards: " + formatHand(p2Hand));
 	    p2CardsVal.setText("Value: " + p2Hand.getValue());
-	    p2Money.setText("Balance: $" + c.getP2money());
+	    p2Money.setText("Balance: $" + controller.getP2money());
 	    
-	    boolean hasNoMoney = (c.getP1money() <= 0 || c.getP2money() <= 0);
+	    boolean hasNoMoney = (controller.getP1money() <= 0 || controller.getP2money() <= 0);
 	    
 	    start.setDisable(inProg || hasNoMoney);
 	    p1Bet.setDisable(inProg || hasNoMoney);
@@ -165,18 +273,18 @@ public class BlackjackView extends Application implements Observer {
 	    
 	    if (turn == 0 && gameStart) {
 	        whoseTurn.setText("Game Over");
-	        status.setText(c.getP1Status() + " | " + c.getP2Status());
+	        status.setText(controller.getP1Status() + " | " + controller.getP2Status());
 	        
-	        c.setGameOver();
+	        controller.setGameOver();
 	        
 	        // Only show alert once
-	        if (c.isGameOver() && !gameOverAlertShown) {
+	        if (controller.isGameOver() && !gameOverAlertShown) {
 	            gameOverAlertShown = true;
 	            Alert gameOver = new Alert(Alert.AlertType.INFORMATION);
 	            gameOver.setTitle("Game Over!");
-	            gameOver.setContentText(c.getWinner() + "!\n\n" +
-	                "Player 1: $" + c.getP1money() + "\n" +
-	                "Player 2: $" + c.getP2money());
+	            gameOver.setContentText(controller.getWinner() + "!\n\n" +
+	                "Player 1: $" + controller.getP1money() + "\n" +
+	                "Player 2: $" + controller.getP2money());
 	            gameOver.setHeaderText("Game Over!");
 	            gameOver.showAndWait();
 	        }
@@ -200,6 +308,7 @@ public class BlackjackView extends Application implements Observer {
 	        gameOverAlertShown = false;
 	    }
 	}
+	
 	private String formatHand(Hand hand) {
 		// TODO Auto-generated method stub
 		if (hand.cardsInHand() == 0) {
@@ -214,12 +323,13 @@ public class BlackjackView extends Application implements Observer {
 		}
 		return sb.toString();
 	}
+	
 	private void startGame() {
 		// TODO Auto-generated method stub
 		try {
 		int bet1 = Integer.parseInt(p1Bet.getText());
 		int bet2 = Integer.parseInt(p2Bet.getText());
-		if (bet1 > c.getP1money() || bet1 <= 0) {
+		if (bet1 > controller.getP1money() || bet1 <= 0) {
 			Alert a = new Alert(Alert.AlertType.ERROR);
 			a.setTitle("Error");
 			a.setHeaderText("Invalid Bet");
@@ -227,7 +337,7 @@ public class BlackjackView extends Application implements Observer {
 			a.showAndWait();
 			return;
 		}
-		if (bet2 > c.getP2money() || bet2 <= 0) {
+		if (bet2 > controller.getP2money() || bet2 <= 0) {
 			Alert a = new Alert(Alert.AlertType.ERROR);
 			a.setTitle("Error");
 			a.setHeaderText("Invalid Bet");
@@ -235,7 +345,7 @@ public class BlackjackView extends Application implements Observer {
 			a.showAndWait();
 			return;
 		}
-		if (c.startGame(bet1, bet2)) {
+		if (controller.startGame(bet1, bet2)) {
 			p1Bet.clear();
 			p2Bet.clear();
 			updateDisplay();
@@ -255,6 +365,7 @@ public class BlackjackView extends Application implements Observer {
 			a.showAndWait();
 		}
 	}
+	
 	private VBox newVbox(int i) {
 		VBox box = new VBox(10);
 		box.setAlignment(Pos.CENTER);
@@ -292,13 +403,10 @@ public class BlackjackView extends Application implements Observer {
 		}
 		return box;
 	}
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 		updateDisplay();
-	}
-	
-	public static void main(String args[]) {
-		Application.launch(args);
 	}
 }
