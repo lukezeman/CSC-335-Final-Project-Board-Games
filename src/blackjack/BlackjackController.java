@@ -106,4 +106,11 @@ public class BlackjackController {
 		m.reset();
 		deleteSave();
 	}
+	public boolean startGame(int bet1, int bet2) {
+		// TODO Auto-generated method stub
+		return m.start(bet1, bet2);
+	}
+	public boolean isGameInProgress() {
+		return getTurn() != 0 || !isGameOver();
+	}
 }
