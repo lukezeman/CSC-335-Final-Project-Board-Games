@@ -9,6 +9,10 @@ package connect4;
 
 import java.util.Observable;
 
+/**
+ * This class defines methods to handle game logic, including making moves, 
+ * updating the game board, and checking for game-over conditions.
+ */
 public class Connect4Model extends Observable {
 	private char[][] board;
 	private char playerTurn;
@@ -49,23 +53,22 @@ public class Connect4Model extends Observable {
 		playerTurn = player;
 	}
 	
-	public boolean setTurn(int col, char player) {
+	/**
+	 * Adds a player piece to game board
+	 * @param col - int that represents a board column
+	 */
+	public void setMove(int col) {
 		int row = 0;
 		
-		// Verifies that column isn't full and that its a valid move
-		if (board[row][col] != '\0') return false;
-		
 		// Looks for a empty slot that has a slot under that isn't empty
-		while ((row + 1) <= 5 && board[row + 1][col] != '\0') row ++;
+		while ((row + 1) <= 5 && board[row + 1][col] != 'r' && board[row + 1][col] != 'y') row ++;
 		
-		board[row][col] = player;
+		board[row][col] = playerTurn;
 		
 		int[] pair = {row, col};
 		
 		setChanged();
 		notifyObservers(pair);
-		
-		return true;
 	}
 	
 	/**
@@ -81,7 +84,7 @@ public class Connect4Model extends Observable {
 		if (isWinner(row, col)) return 1;
 		
 		// First row still has open slots
-		for (char item : board[row]) {
+		for (char item : board[0]) {
 			if (item == '\0') return 0;
 		}	
 		
@@ -96,7 +99,7 @@ public class Connect4Model extends Observable {
 	 * @param col - an int which is the column a piece was dropped in
 	 * @return a boolean where true is the player has won and false no winner.
 	 */
-	public boolean isWinner(int row, int col) {
+	private boolean isWinner(int row, int col) {
 		char player = board[row][col];
 		
 		if (checkDiagonal(row, col, player)) return true;
