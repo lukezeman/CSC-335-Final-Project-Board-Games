@@ -23,6 +23,7 @@ public class Connect4View extends Application implements Observer {
 	private Connect4Model model = new Connect4Model();
 	private Connect4Controller control;
 	private File file = new File("save_connect4.dat");
+	private int[] prevPair = {-1,-1};
 
 
 	private GridPane grid;
@@ -31,6 +32,7 @@ public class Connect4View extends Application implements Observer {
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 		int[] pair = (int[]) arg;
+		prevPair = pair;
 		char curP = control.getTurn();
 		
 		char[][] board = control.getBoard();
@@ -95,13 +97,20 @@ public class Connect4View extends Application implements Observer {
 		for (int i = 0; i < 6; i++) {
 		    for (int j = 0; j < 7; j++) {
 		        StackPane cell = new StackPane();
-		        cell.setPrefSize(45, 45);
+		        cell.setPrefSize(67.5, 67.5);
 		        
-		        Circle circle = new Circle(20, Color.TRANSPARENT);
+		        Circle circle = new Circle(30, Color.TRANSPARENT);
 		        circle.setStroke(Color.TRANSPARENT);
 		      
 		        cell.getChildren().add(circle);
 		        cell.setPadding(new Insets(2, 2, 2, 2));
+		        
+		        // Blue board with black border
+		        cell.setStyle(
+		        	    "-fx-border-color: blue, black;" +
+		        	    "-fx-border-width: 3, 3;" +
+		        	    "-fx-border-insets: 0, 3;"
+		        	);
 				int row = j;
 				
 				// Clicking on a cell adds a piece
@@ -193,11 +202,10 @@ public class Connect4View extends Application implements Observer {
 			newGame(stage);
 		});
 		
-		
 		pane.setCenter(grid);
 		pane.setTop(menuBar);
 		
-		Scene scene = new Scene(pane, 500, 500);
+		Scene scene = new Scene(pane, 555, 505);
 		
 		StackPane wrapper = new StackPane(grid);
 		pane.setCenter(wrapper);
@@ -205,6 +213,14 @@ public class Connect4View extends Application implements Observer {
         stage.setScene(scene);
         stage.setTitle("Connect4");
         stage.show();
+        
+        stage.setOnCloseRequest(event -> {
+        	int status = 0;
+        	if (prevPair[0] != -1) status = control.isGameOver(prevPair[0], prevPair[1]);
+			if (status == 0) {
+
+			}
+		});
 	}
 	
 	/**
