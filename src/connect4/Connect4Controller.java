@@ -59,6 +59,14 @@ public class Connect4Controller {
 	}
 	
 	/**
+	 * Calls method to set a board to a different game board
+	 * @param board - an array of arrays of chars which is a game board
+	 */
+	public void setBoard(char[][] board) {
+		model.setBoard(board);
+	}
+	
+	/**
 	 * Calls method to check if the game is over
 	 * 
 	 * @param row - an int which is the row a piece landed in
@@ -67,6 +75,14 @@ public class Connect4Controller {
 	 */
 	public int isGameOver(int row, int col) {
 		return model.isGameOver(row, col);
+	}
+	
+	/**
+	 * Calls method to save the current game board and player turn to a .dat file as a 
+	 * Connect4Instance object
+	 */
+	public void saveGame() {
+		model.saveGame();
 	}
 	
 }

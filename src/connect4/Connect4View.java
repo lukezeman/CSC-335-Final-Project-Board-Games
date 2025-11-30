@@ -1,3 +1,10 @@
+/**
+ * @author Achilles Soto
+ * Course: CSC 335
+ * File: Connect4View.java
+ * This program provides a UI to the user to interact to play Connect4 by 
+ * communicating with model through the controller.
+ */
 package connect4;
 
 import java.io.File;
@@ -18,28 +25,39 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+/**
+ * This class creates a GUI for the user to interact with, following the 
+ * functions of a Connect4 game.
+ */
 public class Connect4View extends Application implements Observer {
 	private StackPane[][] stackPanes = new StackPane[6][7];
 	private Connect4Model model = new Connect4Model();
 	private Connect4Controller control;
 	private File file = new File("save_connect4.dat");
 	private int[] prevPair = {-1,-1};
-
-
 	private GridPane grid;
 
+	/**
+	 * This method updates the GUI based on the last inputted move which 
+	 * is called whenever the observed object is changed.
+	 *
+	 * @param o -- the observable object
+	 * @param arg -- expected an array of two ints which are the coordinates of the last move
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
+		// Converts the arg into an array and saves it
 		int[] pair = (int[]) arg;
 		prevPair = pair;
 		char curP = control.getTurn();
 		
 		char[][] board = control.getBoard();
-		
-		// Checks if piece was place at the top of a column(meaning full column)
+
+		// Checks if piece was placed at the top of a column(meaning full column)
 		if (pair[0] == 0) {
 			for (StackPane[] row : stackPanes) {
+				// Deactivates column
 				row[pair[1]].setOnMouseClicked(null);
 			}
 		};
@@ -48,27 +66,30 @@ public class Connect4View extends Application implements Observer {
 		
 		int status = control.isGameOver(pair[0], pair[1]);
 		
-		Alert a = new Alert(Alert.AlertType.INFORMATION);
-		// Connect 4 Winner
-		if (status == 1) {
+		// Game is over
+		if (status != 0) {
+			Alert a = new Alert(Alert.AlertType.INFORMATION);
 			disableAll();
-			String winner = "";
-			if (curP == 'y') winner = "Yellow";
-			else winner = "Red";
-			a.setTitle("GAME OVER");
-			a.setHeaderText("Winner: " + winner);
-			a.setContentText(winner + " wins!");
+
+			// Connect4 Winner
+			if (status == 1) {
+				String winner = "";
+				if (curP == 'y') winner = "Yellow";
+				else winner = "Red";
+				a.setTitle("GAME OVER");
+				a.setHeaderText("Winner: " + winner);
+				a.setContentText(winner + " wins!");
+			}
+			// Connect4 Draw
+			else if (status == -1) {
+				a.setTitle("GAME OVER");
+				a.setHeaderText("Draw");
+				a.setContentText("Neither Player Connected Four Pieces And Board Is Full");
+			}
 			a.showAndWait();
-			
+			if (file.exists()) file.delete();
 		}
-		// Connect4 Draw
-		else if (status == -1) {
-			disableAll();
-			a.setTitle("GAME OVER");
-			a.setHeaderText("Draw");
-			a.setContentText("Neither Player Connected Four Pieces And Board Is Full");
-			a.showAndWait();
-		}
+		// Continue playing
 		else {
 			if (curP == 'y') control.setTurn('r');
 			else control.setTurn('y');
@@ -76,9 +97,9 @@ public class Connect4View extends Application implements Observer {
 	}
 	
 	/**
-	 * Remove all setOnMouseClicked actions for each cell
+	 * Sets all setOnMouseClicked actions to null for each cell
 	 */
-	public void disableAll() {
+	private void disableAll() {
 		for (StackPane[] row : stackPanes) {
 			for (StackPane cell : row) {
 				cell.setOnMouseClicked(null);
@@ -164,7 +185,6 @@ public class Connect4View extends Application implements Observer {
 		MenuItem menuItem = new MenuItem("New Game");
 		menu.getItems().add(menuItem);
 		menuBar.getMenus().add(menu);
-		
 	}
 	
 	/**
@@ -179,14 +199,21 @@ public class Connect4View extends Application implements Observer {
 	/**
 	 * Creates a new game of 
 	 * 
-	 * @param stage -- the JavaFX stage
+	 * @param stage - the JavaFX stage
 	 */
 	private void newGame(Stage stage) {
 		BorderPane pane = new BorderPane();
 		model = new Connect4Model();
-		model.addObserver(this);
-
 		control = new Connect4Controller(model);
+
+		// Updates board according to the a previous saved game if available
+		Connect4Instance loadedModel = Connect4Instance.loadGame();
+		if (loadedModel != null) {
+			control.setTurn(loadedModel.getTurn());
+			control.setBoard(loadedModel.getBoard());
+		}
+		
+		model.addObserver(this);
 
 		grid = new GridPane();
 		
@@ -198,34 +225,34 @@ public class Connect4View extends Application implements Observer {
 		// Adds functionality to menu item
 		menuBar.getMenus().getFirst().getItems().getFirst().setOnAction(event -> {
 			if (file.exists()) file.delete();
-			//model = new Connect4Model();
 			newGame(stage);
 		});
 		
+		// Adds grid and menuBar to BorderPane
 		pane.setCenter(grid);
 		pane.setTop(menuBar);
 		
 		Scene scene = new Scene(pane, 555, 505);
 		
-		StackPane wrapper = new StackPane(grid);
-		pane.setCenter(wrapper);
-		
         stage.setScene(scene);
         stage.setTitle("Connect4");
         stage.show();
         
+        // Saves game if window is closed while game is not over
         stage.setOnCloseRequest(event -> {
         	int status = 0;
+        	// Checks if theres at least one move that was made
         	if (prevPair[0] != -1) status = control.isGameOver(prevPair[0], prevPair[1]);
+        	// Checks if the game is not over
 			if (status == 0) {
-
+				control.saveGame();
 			}
 		});
 	}
 	
 	/**
 	 * Starts this program
-	 * @param args : a String[] that is meant for command line arguments
+	 * @param args - a String[] that is meant for command line arguments
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

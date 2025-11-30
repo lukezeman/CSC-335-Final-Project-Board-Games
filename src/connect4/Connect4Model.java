@@ -17,9 +17,20 @@ public class Connect4Model extends Observable {
 	private char[][] board;
 	private char playerTurn;
 	
+	/**
+	 * Allows for an instance of this class to be made and sets up variables
+	 */
 	public Connect4Model() {
 		board = new char[6][7];
 		playerTurn = 'y';
+	}
+	
+	/**
+	 * Saves the current game board and player turn to a .dat file as a Connect4Instance object
+	 */
+	public void saveGame() {
+		Connect4Instance instance = new Connect4Instance(this);
+		instance.saveGame();
 	}
 	
 	/**
@@ -31,6 +42,10 @@ public class Connect4Model extends Observable {
 		return board;
 	}
 	
+	/**
+	 * Sets a board to a different game board
+	 * @param board - an array of arrays of chars which is a game board
+	 */
 	public void setBoard(char[][] board){
 		this.board = board;
 	}
