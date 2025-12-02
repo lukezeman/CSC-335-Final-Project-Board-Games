@@ -43,7 +43,6 @@ public class CardView extends VBox {
     }
     public void setCard(Card card) {
     	try {
-            // Load from resources folder
             String imagePath = "/cards/" + card.getImageFileName();
             Image image = new Image(getClass().getResourceAsStream(imagePath));
             
@@ -52,8 +51,8 @@ public class CardView extends VBox {
             }
             
             imageView.setImage(image);
-            cardNameLabel.setText(card.toString()); // Show card name for debugging
-            System.out.println("Loaded card image: " + imagePath); // Debug output
+            cardNameLabel.setText(card.toString());
+            System.out.println("Loaded card image: " + imagePath);
         } catch (Exception e) {
             System.err.println("Could not load image: " + card.getImageFileName());
             System.err.println("Error: " + e.getMessage());

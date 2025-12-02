@@ -165,7 +165,7 @@ public class BlackjackView implements Observer {
 	        for (int i = 0; i < dealerHand.getCards().size(); i++) {
 	            CardView cardView = new CardView();
 	            if (inProg && i == 0) {
-	                cardView.showCardBack(); // Hide first card
+	                cardView.showCardBack();
 	            } else {
 	                cardView.setCard(dealerHand.getCards().get(i));
 	            }
