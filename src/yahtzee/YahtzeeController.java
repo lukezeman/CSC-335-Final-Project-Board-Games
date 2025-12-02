@@ -47,6 +47,10 @@ public class YahtzeeController {
 		return model.getPlayer2();
 	}
 	
+	protected boolean isCategoryAvailable(YahtzeeCategory category) {
+		return model.isCategoryAvailable(category);
+	}
+	
 	protected void saveGame() {
 		model.saveGame();
 	}

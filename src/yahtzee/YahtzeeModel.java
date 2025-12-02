@@ -38,22 +38,42 @@ public class YahtzeeModel extends Observable {
 	protected void recordScore(YahtzeeCategory category, int[] dice) {
 		int score = category.calculateScore(dice);
 		currentPlayer.getScorecard().recordScore(category, dice);
+		boolean checkUpper = false;
 		
 		if (currentPlayer.getScorecard().isUpperSectionFull() && !currentPlayer.getScorecard().upperBonusChecked()) {
 			currentPlayer.getScorecard().checkEligibilityUpperBonus();
-			setChanged();
-			notifyObservers(new ScoreUpdate(category, score, true, currentPlayer));
-		} else {
-			setChanged();
-			notifyObservers(new ScoreUpdate(category, score, false, currentPlayer));
+			checkUpper = true;
+		}
+	
+		YahtzeeDie[] diceObjs = currentPlayer.getDice();
+		for (YahtzeeDie die : diceObjs) {
+			if (die.isHeld()) {
+				die.toggleHold();
+			}
 		}
 		
+		YahtzeePlayer scoringPlayer = currentPlayer;
+		
 		nextTurn();
+		
+		setChanged();
+		notifyObservers(new ScoreUpdate(category, score, checkUpper, scoringPlayer));
 	}
 	
 	protected boolean recordBonusYahtzee(int[] dice) {
 		if (currentPlayer.getScorecard().recordBonusYahtzee(dice)) {
+			YahtzeeDie[] diceObjs = currentPlayer.getDice();
+			for (YahtzeeDie die : diceObjs) {
+				if (die.isHeld()) {
+					die.toggleHold();
+				}
+			}
+			
+			YahtzeePlayer scoringPlayer = currentPlayer;
 			nextTurn();
+			
+			setChanged();
+			notifyObservers(new ScoreUpdate(null, 100, false, scoringPlayer));
 			return true;
 		} else {
 			return false;
@@ -62,9 +82,9 @@ public class YahtzeeModel extends Observable {
 	
 	private void nextTurn() {
 		rollsRemaining = 3;
-		if (currentPlayer == player1) {
+		if (currentPlayer == player1 && !player2.getScorecard().isComplete()) {
 			currentPlayer = player2;
-		} else {
+		} else if (currentPlayer == player2 && !player1.getScorecard().isComplete()) {
 			currentPlayer = player1;
 		}
 	}
@@ -104,6 +124,10 @@ public class YahtzeeModel extends Observable {
 	
 	protected YahtzeePlayer getPlayer2() {
 		return player2;
+	}
+	
+	protected boolean isCategoryAvailable(YahtzeeCategory category) {
+		return currentPlayer.getScorecard().isCategoryAvailable(category);
 	}
 	
 	protected void saveGame() {
