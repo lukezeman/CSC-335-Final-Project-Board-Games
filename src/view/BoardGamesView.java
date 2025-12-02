@@ -53,10 +53,10 @@ public class BoardGamesView extends Application {
 	}
 	
 	private void loadImages() {
-		images[0] = new Image(getClass().getResourceAsStream("blackjack.png"));
-		images[1] = new Image(getClass().getResourceAsStream("checkers.png"));
-		images[2] = new Image(getClass().getResourceAsStream("connect4.png"));
-		images[3] = new Image(getClass().getResourceAsStream("yahtzee.png"));
+		images[0] = new Image(getClass().getResourceAsStream("/mainMenu/blackjack.png"));
+		images[1] = new Image(getClass().getResourceAsStream("/mainMenu/checkers.png"));
+		images[2] = new Image(getClass().getResourceAsStream("/mainMenu/connect4.png"));
+		images[3] = new Image(getClass().getResourceAsStream("/mainMenu/yahtzee.png"));
 		
 		imageViews[0] = new ImageView(images[0]);
 		imageViews[1] = new ImageView(images[1]);

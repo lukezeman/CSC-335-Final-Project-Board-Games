@@ -67,7 +67,7 @@ public class YahtzeeView implements Observer {
 		this.stage = mainMenu.getStage();
 		
 		for (int i = 0; i < 6; i++) {
-			dieImages[i] = new Image(getClass().getResourceAsStream("die" + (i+1) + ".png"));
+			dieImages[i] = new Image(getClass().getResourceAsStream("/dice/die" + (i+1) + ".png"));
 		}
 	    
 		startNewGame();
