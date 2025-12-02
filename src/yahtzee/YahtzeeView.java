@@ -6,7 +6,6 @@ import java.util.Observer;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,7 +44,9 @@ import javafx.scene.layout.BorderWidths;
  * 
  */
 @SuppressWarnings("deprecation")
-public class YahtzeeView extends Application implements Observer {
+public class YahtzeeView implements Observer {
+	private BoardGamesView mainMenu;
+	private Scene scene;
 	private Stage stage;
 	private YahtzeeController controller;
 	private YahtzeeModel model;
@@ -60,16 +62,16 @@ public class YahtzeeView extends Application implements Observer {
 	private Button button;
 	private Label infoLabel;
 	
-//	public YahtzeeView(Stage stage) {
-//		this.stage = stage;
-//		this.model = new YahtzeeModel("Player 1", "Player 2");
-//	
-//		for (int i = 0; i < 6; i++) {
-//			dieImages[i] = new Image("die" + (i+1) + ".png");
-//		}
-//
-//		setupUI();
-//	}
+	public YahtzeeView(BoardGamesView mainMenu) {
+		this.mainMenu = mainMenu;
+		this.stage = mainMenu.getStage();
+		
+		for (int i = 0; i < 6; i++) {
+			dieImages[i] = new Image(getClass().getResourceAsStream("die" + (i+1) + ".png"));
+		}
+	    
+		startNewGame();
+	}
 	
 	private void startNewGame() {
 		Stage playerScreen = new Stage();
@@ -119,15 +121,11 @@ public class YahtzeeView extends Application implements Observer {
 		start.setFont(Font.font("System", 15));
 		pane.setPadding(new Insets(20));
 		
-		Scene playerScene = new Scene(pane, 500, 300);
-		playerScreen.setScene(playerScene);
-		playerScreen.show();
+		scene = new Scene(pane, 500, 300);
+		stage.setScene(scene);
 	}
 	
 	private void setupUI(String player1Name, String player2Name) {
-		for (int i = 0; i < 6; i++) {
-			dieImages[i] = new Image(getClass().getResourceAsStream("die" + (i+1) + ".png"));
-		}
 		model = new YahtzeeModel(player1Name, player2Name);
 		controller = new YahtzeeController(model);
 		model.addObserver(this);
@@ -139,7 +137,7 @@ public class YahtzeeView extends Application implements Observer {
 		categoryLabels1[0].setText(player1Name);
 		categoryLabels2[0].setText(player2Name);
 		
-		Scene scene = new Scene(borderPane, 500, 800);
+		scene = new Scene(borderPane, 500, 800);
 		stage.setScene(scene);
 		stage.setTitle("Yahtzee");
 		stage.show();
@@ -503,43 +501,6 @@ public class YahtzeeView extends Application implements Observer {
 		}
 	}
 	
-	private BoardGamesView menuView;
-	
-	private Scene scene;
-	
-	public YahtzeeView(BoardGamesView menuView) {
-		this.menuView = menuView;
-		scene = setupScene();
-	}
-	
-	/*
-	 * When making your GUI, instead of setting up a stage and stuff, just
-	 * set up the scene you want in here and the BoardGamesView class will 
-	 * handle displaying this to the screen. Feel free to use the exitToMenu
-	 * methods in the menuView, as well as whatever other methods are added
-	 */
-	private Scene setupScene() {
-		
-		BorderPane borderPane = new BorderPane();
-		Label label = new Label("NOT FINISHED!!!");
-		borderPane.setCenter(label);
-		
-		Button exitButton = new Button("Exit");
-		exitButton.setOnAction(e -> {
-			menuView.exitToMenu();
-		});
-		
-		borderPane.setTop(exitButton);
-		
-		Scene scene = new Scene(borderPane, 500, 500);
-		
-		return scene;
-	}
-	
-	public Scene getScene() {
-		return scene;
-	}
-	
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
@@ -630,7 +591,8 @@ public class YahtzeeView extends Application implements Observer {
 		Menu file = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem rules = new MenuItem("How To Play");
-		file.getItems().addAll(newGame, rules);
+		MenuItem exit = new MenuItem("Exit");
+		file.getItems().addAll(newGame, rules, new SeparatorMenuItem(), exit);
 		menuBar.getMenus().add(file);
 		
 		newGame.setOnAction(event -> {
@@ -639,6 +601,10 @@ public class YahtzeeView extends Application implements Observer {
 		
 		rules.setOnAction(event -> {
 			showHowToPlay();
+		});
+		
+		exit.setOnAction(event -> {
+			mainMenu.exitToMenu();
 		});
 		
 		return menuBar;
@@ -680,20 +646,13 @@ public class YahtzeeView extends Application implements Observer {
 		
 		content.getChildren().addAll(title, rules);
 		
-		Scene scene = new Scene(content, 650, 500);
+		scene = new Scene(content, 650, 500);
 	    howToStage.setScene(scene);
 	    howToStage.show();
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
+	public Scene getScene() {
+		return scene;
 	}
-
-	@Override
-	public void start(Stage arg0) throws Exception {
-		// TODO Auto-generated method stub
-		this.stage = arg0;
-		startNewGame();
-		
-	}
+	
 }

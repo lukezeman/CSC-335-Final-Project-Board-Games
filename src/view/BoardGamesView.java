@@ -78,6 +78,10 @@ public class BoardGamesView extends Application {
 		window.setCenter(mainBox);
 	}
 	
+	public Stage getStage() {
+	    return guiStage;
+	}
+	
 	public void exitToMenu() {
 		guiStage.setScene(menuScene);
 	}
