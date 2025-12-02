@@ -99,21 +99,25 @@ public class BoardGamesView extends Application {
 		blackjack.setOnMouseClicked(e -> {
 			BlackjackView newBlackjackGame = new BlackjackView(this);
 			stage.setScene(newBlackjackGame.getScene());
+			stage.centerOnScreen();
 		});
 		
 		checkers.setOnMouseClicked(e -> {
 			CheckersView newCheckersGame = new CheckersView(this);
 			stage.setScene(newCheckersGame.getScene());
+			stage.centerOnScreen();
 		});
 		
 		connect4.setOnMouseClicked(e -> {
 			Connect4View newConnect4Game = new Connect4View(this);
 			stage.setScene(newConnect4Game.getScene());
+			stage.centerOnScreen();
 		});
 		
 		yahtzee.setOnMouseClicked(e -> {
 			YahtzeeView newYahtzeeGame = new YahtzeeView(this);
 			stage.setScene(newYahtzeeGame.getScene());
+			stage.centerOnScreen();
 		});
 		
 		window.setCenter(gridPane);
