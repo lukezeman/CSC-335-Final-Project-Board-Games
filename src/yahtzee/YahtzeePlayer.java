@@ -16,7 +16,9 @@ public class YahtzeePlayer {
 	
 	protected void rollAll() {
 		for (YahtzeeDie die : dice) {
-			die.roll();
+			if (!die.isHeld()) {
+				die.roll();
+			}
 		}
 	}
 	
