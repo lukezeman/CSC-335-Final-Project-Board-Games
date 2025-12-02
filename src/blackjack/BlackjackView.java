@@ -3,7 +3,7 @@ package blackjack;
 import java.util.Observable;
 import java.util.Observer;
 
-import javafx.application.Application;
+//import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -17,7 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+//import javafx.stage.Stage;
 import view.BoardGamesView;
 
 @SuppressWarnings("deprecation")
@@ -27,17 +27,17 @@ public class BlackjackView implements Observer {
 	private BlackjackModel model;
 	private BlackjackController controller;
 	
-	private Label p1cards;
+	//private Label p1cards;
 	private Label p1CardsVal;
 	private Label p1Money;
 	private TextField p1Bet;
 	
-	private Label p2cards;
+	//private Label p2cards;
 	private Label p2CardsVal;
 	private Label p2Money;
 	private TextField p2Bet;
 	
-	private Label dealerCards;
+	//private Label dealerCards;
 	private Label dealerValue;
 	
 	private Button start;
@@ -45,6 +45,10 @@ public class BlackjackView implements Observer {
 	private Button stand;
 	private Label whoseTurn;
 	private Label status;
+	
+	private HBox p1Display;
+	private HBox p2Display;
+	private HBox dealerDisplay;
 	
 	private boolean gameOverAlertShown = false;
 	
@@ -97,10 +101,11 @@ public class BlackjackView implements Observer {
 		house.setAlignment(Pos.CENTER);
 		
 		Label dealLabel = new Label("DEALER");
-		dealerCards = new Label("Cards: ");
+		dealerDisplay = new HBox(5);
+		dealerDisplay.setAlignment(Pos.CENTER);
 		dealerValue = new Label("Value: ");
 		
-		house.getChildren().addAll(dealLabel, dealerCards, dealerValue);
+		house.getChildren().addAll(dealLabel, dealerDisplay, dealerValue);
 		
 		HBox players = new HBox(30);
 		players.setAlignment(Pos.CENTER);
@@ -146,98 +151,6 @@ public class BlackjackView implements Observer {
 	public Scene getScene() {
 		return scene;
 	}
-	/*
-	 * I decided to leave your old code to preserve a record if I did something
-	 * stupid
-	 * 
-	 * 
-	@Override
-	public void start(Stage stage) {
-		m = new BlackjackModel();
-		c = new BlackjackController(m);
-		m.addObserver(this);
-		
-		BorderPane root = new BorderPane();
-
-		MenuBar menuBar = new MenuBar();
-		Menu fileMenu = new Menu("File");
-		
-		MenuItem newGame = new MenuItem("New Game");
-		newGame.setOnAction(e -> {
-			c.resetGame();
-			gameOverAlertShown = false;
-			updateDisplay();
-		});
-		
-		MenuItem exit = new MenuItem("Exit");
-		exit.setOnAction(e -> {
-			c.saveGame();
-			stage.close();
-		});
-		fileMenu.getItems().addAll(newGame, new SeparatorMenuItem(), exit);
-		menuBar.getMenus().add(fileMenu);
-		
-		root.setTop(menuBar);
-		
-		VBox gameDisplay = new VBox(20);
-		gameDisplay.setAlignment(Pos.CENTER);
-		
-		VBox house = new VBox(10);
-		house.setAlignment(Pos.CENTER);
-		
-		Label dealLabel = new Label("DEALER");
-		dealerCards = new Label("Cards: ");
-		dealerValue = new Label("Value: ");
-		
-		house.getChildren().addAll(dealLabel, dealerCards, dealerValue);
-		
-		HBox players = new HBox(30);
-		players.setAlignment(Pos.CENTER);
-		
-		VBox p1Box = newVbox(1);
-		VBox p2Box = newVbox(2);
-		
-		players.getChildren().addAll(p1Box, p2Box);
-		gameDisplay.getChildren().addAll(house, players);
-		
-		root.setCenter(gameDisplay);
-		
-		VBox buttonsCol = new VBox(10);
-		buttonsCol.setAlignment(Pos.CENTER);
-		
-		HBox buttons = new HBox(10);
-		buttons.setAlignment(Pos.CENTER);
-		
-		start = new Button("Start");
-		start.setOnAction(e -> startGame());
-		start.setDisable(false);
-		
-		hit = new Button("Hit");
-		hit.setOnAction(e -> c.hit());
-		hit.setDisable(true);
-		
-		stand = new Button("Stand");
-		stand.setOnAction(e -> c.stand());
-		stand.setDisable(true);
-		
-		buttons.getChildren().addAll(start, hit, stand);
-		whoseTurn = new Label("Place bets");
-		status = new Label("");
-		
-		buttonsCol.getChildren().addAll(buttons, whoseTurn, status);
-		root.setBottom(buttonsCol);
-		
-		c.loadGame();
-		
-		Scene scene = new Scene(root, 800, 600);
-		stage.setScene(scene);
-		stage.setTitle("Blackjack");
-		stage.setOnCloseRequest(e -> c.saveGame());
-        stage.show();
-        
-        updateDisplay();
-	}
-	*/
 	
 	private void updateDisplay() {
 		// TODO Auto-generated method stub
@@ -247,19 +160,41 @@ public class BlackjackView implements Observer {
 		boolean gameStart = (p1Hand.cardsInHand() > 0 || p2Hand.cardsInHand() > 0);
 		int turn = controller.getTurn();
 		boolean inProg = (turn != 0) && gameStart;
-		if (inProg && dealerHand.cardsInHand() > 0) {
-			dealerCards.setText("Cards: ?, " + dealerHand.getCards().get(1));
-	        dealerValue.setText("Value: ??");
-		}
-		else {
-			dealerCards.setText("Cards: " + formatHand(dealerHand));
-	        dealerValue.setText("Value: " + dealerHand.getValue());
-		}
-		p1cards.setText("Cards: " + formatHand(p1Hand));
+		dealerDisplay.getChildren().clear();
+	    if (dealerHand.cardsInHand() > 0) {
+	        for (int i = 0; i < dealerHand.getCards().size(); i++) {
+	            CardView cardView = new CardView();
+	            if (inProg && i == 0) {
+	                cardView.showCardBack(); // Hide first card
+	            } else {
+	                cardView.setCard(dealerHand.getCards().get(i));
+	            }
+	            dealerDisplay.getChildren().add(cardView);
+	        }
+	        if (inProg) {
+	            dealerValue.setText("Value: ??");
+	        } else {
+	            dealerValue.setText("Value: " + dealerHand.getValue());
+	        }
+	    } else {
+	        dealerValue.setText("Value: 0");
+	    }
+	    
+	    p1Display.getChildren().clear();
+	    for (Card card : p1Hand.getCards()) {
+	        CardView cardView = new CardView();
+	        cardView.setCard(card);
+	        p1Display.getChildren().add(cardView);
+	    }
 	    p1CardsVal.setText("Value: " + p1Hand.getValue());
 	    p1Money.setText("Balance: $" + controller.getP1money());
 	    
-	    p2cards.setText("Cards: " + formatHand(p2Hand));
+	    p2Display.getChildren().clear();
+	    for (Card card : p2Hand.getCards()) {
+	        CardView cardView = new CardView();
+	        cardView.setCard(card);
+	        p2Display.getChildren().add(cardView);
+	    }
 	    p2CardsVal.setText("Value: " + p2Hand.getValue());
 	    p2Money.setText("Balance: $" + controller.getP2money());
 	    
@@ -276,8 +211,7 @@ public class BlackjackView implements Observer {
 	        status.setText(controller.getP1Status() + " | " + controller.getP2Status());
 	        
 	        controller.setGameOver();
-	        
-	        // Only show alert once
+	       
 	        if (controller.isGameOver() && !gameOverAlertShown) {
 	            gameOverAlertShown = true;
 	            Alert gameOver = new Alert(Alert.AlertType.INFORMATION);
@@ -309,20 +243,7 @@ public class BlackjackView implements Observer {
 	    }
 	}
 	
-	private String formatHand(Hand hand) {
-		// TODO Auto-generated method stub
-		if (hand.cardsInHand() == 0) {
-			return "Empty";
-		}
-		StringBuilder sb = new StringBuilder();
-		for (Card c : hand.getCards()) {
-			sb.append(c.toString()).append(", ");
-		}
-		if (sb.length() > 2) {
-			sb.setLength(sb.length() - 2);
-		}
-		return sb.toString();
-	}
+
 	
 	private void startGame() {
 		// TODO Auto-generated method stub
@@ -374,32 +295,36 @@ public class BlackjackView implements Observer {
 		Label title = new Label("Player " + i);
 		
 		if (i == 1) {
-			p1cards = new Label("Cards: ");
-			p1CardsVal = new Label("Value: ");
-			p1Money = new Label("Balance: $500");
-			
-			HBox bet = new HBox(5);
-			bet.setAlignment(Pos.CENTER);
-			Label betLabel = new Label("Bet:");
-			p1Bet = new TextField("10");
-			p1Bet.setPrefWidth(80);
-			bet.getChildren().addAll(betLabel, p1Bet);
-			
-			box.getChildren().addAll(title, p1cards, p1CardsVal, p1Money, bet);
+			p1Display = new HBox(5);
+			p1Display.setAlignment(Pos.CENTER);
+	        
+	        p1CardsVal = new Label("Value: 0");
+	        p1Money = new Label("Balance: $500");
+	        
+	        HBox bet = new HBox(5);
+	        bet.setAlignment(Pos.CENTER);
+	        Label betLabel = new Label("Bet:");
+	        p1Bet = new TextField("10");
+	        p1Bet.setPrefWidth(80);
+	        bet.getChildren().addAll(betLabel, p1Bet);
+	        
+	        box.getChildren().addAll(title, p1Display, p1CardsVal, p1Money, bet);
 		}
 		else {
-			p2cards = new Label("Cards: ");
-			p2CardsVal = new Label("Value: ");
-			p2Money = new Label("Balance: $500");
-			
-			HBox bet = new HBox(5);
-			bet.setAlignment(Pos.CENTER);
-			Label betLabel = new Label("Bet:");
-			p2Bet = new TextField("10");
-			p2Bet.setPrefWidth(80);
-			bet.getChildren().addAll(betLabel, p2Bet);
-			
-			box.getChildren().addAll(title, p2cards, p2CardsVal, p2Money, bet);
+			p2Display = new HBox(5);
+	        p2Display.setAlignment(Pos.CENTER);
+	        
+	        p2CardsVal = new Label("Value: 0");
+	        p2Money = new Label("Balance: $500");
+	        
+	        HBox bet = new HBox(5);
+	        bet.setAlignment(Pos.CENTER);
+	        Label betLabel = new Label("Bet:");
+	        p2Bet = new TextField("10");
+	        p2Bet.setPrefWidth(80);
+	        bet.getChildren().addAll(betLabel, p2Bet);
+	        
+	        box.getChildren().addAll(title, p2Display, p2CardsVal, p2Money, bet);
 		}
 		return box;
 	}
