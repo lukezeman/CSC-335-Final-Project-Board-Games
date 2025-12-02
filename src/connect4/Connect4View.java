@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -23,19 +22,39 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
+import view.BoardGamesView;
 
 /**
  * This class creates a GUI for the user to interact with, following the 
  * functions of a Connect4 game.
  */
-public class Connect4View extends Application implements Observer {
+public class Connect4View implements Observer {
 	private StackPane[][] stackPanes = new StackPane[6][7];
 	private Connect4Model model = new Connect4Model();
 	private Connect4Controller control;
 	private File file = new File("save_connect4.dat");
 	private int[] prevPair = {-1,-1};
 	private GridPane grid;
+
+	private BoardGamesView menuView;
+	private Scene scene;
+	
+	/**
+	 * Allows for an instance of this class to be made and sets up variables
+	 * @param menuView - a BoardsGameView object used to update the stage
+	 */
+	public Connect4View(BoardGamesView menuView) {
+		this.menuView = menuView;
+		scene = newGame();
+	}
+	
+	/**
+	 * Retrieves the scene of the Connect4 Game
+	 * @return Scene object which holds the GUI of the Connect4 Game
+	 */
+	public Scene getScene() {
+		return scene;
+	}
 
 	/**
 	 * This method updates the GUI based on the last inputted move which 
@@ -182,26 +201,34 @@ public class Connect4View extends Application implements Observer {
 	 */
 	private void createMenu(MenuBar menuBar) {
 		Menu menu = new Menu("File");
-		MenuItem menuItem = new MenuItem("New Game");
-		menu.getItems().add(menuItem);
+		MenuItem newGame = new MenuItem("New Game");
+		newGame.setOnAction(event -> {
+			if (file.exists()) file.delete();
+			menuView.getStage().setScene(newGame());
+		
+		});
+
+		MenuItem exit = new MenuItem("Exit");
+		exit.setOnAction(e -> {
+			int status = 0;
+        	// Checks if theres at least one move that was made
+        	if (prevPair[0] != -1) status = control.isGameOver(prevPair[0], prevPair[1]);
+        	// Checks if the game is not over
+			if (status == 0) {
+				control.saveGame();
+			}
+			menuView.exitToMenu();
+		});
+		menu.getItems().add(newGame);
+		menu.getItems().add(exit);
 		menuBar.getMenus().add(menu);
 	}
 	
 	/**
-	 * This method sets up the scene and calls other methods to setup the GUI
+	 * Creates/loads a game of Connect4 to present as a GUI
+	 * @return Scene object to be used on the Super Awesome Games main menu
 	 */
-	@Override
-	public void start(Stage stage) throws Exception {
-		// TODO Auto-generated method stub
-		newGame(stage);
-	}
-	
-	/**
-	 * Creates a new game of 
-	 * 
-	 * @param stage - the JavaFX stage
-	 */
-	private void newGame(Stage stage) {
+	private Scene newGame() {
 		BorderPane pane = new BorderPane();
 		model = new Connect4Model();
 		control = new Connect4Controller(model);
@@ -222,42 +249,13 @@ public class Connect4View extends Application implements Observer {
 		MenuBar menuBar = new MenuBar();
 		createMenu(menuBar);
 		
-		// Adds functionality to menu item
-		menuBar.getMenus().getFirst().getItems().getFirst().setOnAction(event -> {
-			if (file.exists()) file.delete();
-			newGame(stage);
-		});
-		
 		// Adds grid and menuBar to BorderPane
 		pane.setCenter(grid);
 		pane.setTop(menuBar);
 		
 		Scene scene = new Scene(pane, 555, 505);
 		
-        stage.setScene(scene);
-        stage.setTitle("Connect4");
-        stage.show();
-        
-        // Saves game if window is closed while game is not over
-        stage.setOnCloseRequest(event -> {
-        	int status = 0;
-        	// Checks if theres at least one move that was made
-        	if (prevPair[0] != -1) status = control.isGameOver(prevPair[0], prevPair[1]);
-        	// Checks if the game is not over
-			if (status == 0) {
-				control.saveGame();
-			}
-		});
-	}
-	
-	/**
-	 * Starts this program
-	 * @param args - a String[] that is meant for command line arguments
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		launch(args);
-
+        return scene;
 	}
 	
 }

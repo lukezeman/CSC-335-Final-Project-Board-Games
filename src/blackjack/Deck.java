@@ -29,10 +29,8 @@ public class Deck implements Serializable {
 		cards.remove(c);
 	}
 	public void resetDeck() {
-		for (int i = 0; i < cardsInPlay.size(); i++) {
-			cards.add(cardsInPlay.get(i));
-			cardsInPlay.remove(i);
-		}
+		cards.addAll(cardsInPlay);
+		cardsInPlay.clear();
 		shuffleDeck();
 	}
 	private void shuffleDeck() {

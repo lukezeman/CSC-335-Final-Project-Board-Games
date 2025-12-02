@@ -26,4 +26,9 @@ public class Card implements Serializable {
 	public String toString() {
 		return rank + " of " + suit;
 	}
+	public String getImageFileName() {
+        String rankLower = rank.toLowerCase();
+        String suitLower = suit.toLowerCase();
+        return rankLower + "_of_" + suitLower + ".png";
+    }
 }

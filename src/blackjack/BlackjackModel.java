@@ -56,6 +56,9 @@ public class BlackjackModel extends Observable {
 		p1Done = false;
 		p2Done = false;
 		
+		turn = 1;
+		isGameOver = false;
+		
 		if (p1.isBlackjack()) {
 			p1Done = true;
 			turn = 2;
@@ -126,50 +129,46 @@ public class BlackjackModel extends Observable {
 		updateMoney(2);
 	}
 	private void updateMoney(int whichPlayer) {
-		Hand handToCalc;
-		if (whichPlayer == 1) {
-			handToCalc = p1;
-		}
-		else {
-			handToCalc = p2;
-		}
-		if (handToCalc.isBust()) {
-			return;
-		}
-		if (dealer.isBust() || (handToCalc.getValue() > dealer.getValue())) {
-			updateMoneyHelp(handToCalc);
-		}
-		else if (handToCalc.getValue() == dealer.getValue()) {
-			if (turn == 1) {
-				p1money += p1bet;
-			}
-			else {
-				p2money += p2bet;
-			}
-		}
+	    Hand handToCalc;
+	    int bet;
+	    
+	    if (whichPlayer == 1) {
+	        handToCalc = p1;
+	        bet = p1bet;
+	    } else {
+	        handToCalc = p2;
+	        bet = p2bet;
+	    }
+	    
+	    if (handToCalc.isBust()) {
+	        return;
+	    }
+	    
+	    if (dealer.isBust() || (handToCalc.getValue() > dealer.getValue())) {
+	        if (handToCalc.isBlackjack()) {
+	            int winnings = bet + (int)(bet * 1.5);
+	            if (whichPlayer == 1) {
+	                p1money += winnings;
+	            } else {
+	                p2money += winnings;
+	            }
+	        } else {
+	            if (whichPlayer == 1) {
+	                p1money += bet * 2;
+	            } else {
+	                p2money += bet * 2;
+	            }
+	        }
+	    } else if (handToCalc.getValue() == dealer.getValue()) {
+	        // Push - return bet
+	        if (whichPlayer == 1) {
+	            p1money += bet;
+	        } else {
+	            p2money += bet;
+	        }
+	    }
 	}
-	private void updateMoneyHelp(Hand h) {
-		if (h.isBlackjack()) {
-			if (turn == 1) {
-				p1money += p1bet;
-				p1money += (p1bet * 1.5);
-			}
-			else {
-				p2money += p2bet;
-				p2money += (p2bet * 1.5);
-			}
-		}
-		else {
-			if (turn == 1) {
-				p1money += p1bet;
-				p1money += p1bet;
-			}
-			else {
-				p2money += p2bet;
-				p2money += p2bet;
-			}
-		}
-	}
+	
 	public Hand getP1() {
 		return p1;
 	}

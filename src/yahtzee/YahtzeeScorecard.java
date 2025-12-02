@@ -83,4 +83,12 @@ public class YahtzeeScorecard {
 		return upperBonusChecked;
 	}
 	
+	protected int getUpperSection() {
+		return upperSection;
+	}
+	
+	protected int getLowerSection() {
+		return lowerSection;
+	}
+	
 }

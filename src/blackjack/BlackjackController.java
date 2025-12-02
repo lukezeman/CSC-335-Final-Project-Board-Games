@@ -73,10 +73,14 @@ public class BlackjackController {
 		}
 	}
 	public void saveGame() {
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("blackjack_save.dat"))) {
+		try {
+			m.deleteObservers();
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("blackjack_save.dat"));
 			out.writeObject(m.getInstance());
+			out.close();
 		} catch (IOException e) {
 			System.err.println("Error saving game");
+			e.printStackTrace();
 		}
 	}
 	public void loadGame() {
@@ -105,5 +109,12 @@ public class BlackjackController {
 	public void resetGame() {
 		m.reset();
 		deleteSave();
+	}
+	public boolean startGame(int bet1, int bet2) {
+		// TODO Auto-generated method stub
+		return m.start(bet1, bet2);
+	}
+	public boolean isGameInProgress() {
+		return getTurn() != 0 || !isGameOver();
 	}
 }

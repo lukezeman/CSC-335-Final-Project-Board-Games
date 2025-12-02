@@ -31,7 +31,7 @@ public class Hand implements Serializable {
 		return value;	
 	}
 	public boolean isBust() {
-		return getValue() >= 22;
+		return getValue() > 21;
 	}
 	public boolean isBlackjack() {
 		return cards.size() == 2 && getValue() == 21;
