@@ -49,6 +49,7 @@ public class BoardGamesView extends Application {
 		stage.setScene(scene);
 		stage.setTitle("Super Awesome Board Games");
 		stage.show();
+		stage.centerOnScreen();
 	}
 	
 	private void loadImages() {
@@ -131,6 +132,7 @@ public class BoardGamesView extends Application {
 	
 	public void exitToMenu() {
 		guiStage.setScene(menuScene);
+		guiStage.centerOnScreen();
 	}
 	
 }

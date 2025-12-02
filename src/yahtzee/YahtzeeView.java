@@ -141,6 +141,7 @@ public class YahtzeeView implements Observer {
 		stage.setScene(scene);
 		stage.setTitle("Yahtzee");
 		stage.show();
+		stage.centerOnScreen();
 	}
 	
 	private void setupDiceandMenu() {
@@ -278,6 +279,8 @@ public class YahtzeeView implements Observer {
 				} else {
 					player2Pane.setDisable(false);
 				}
+				
+				infoLabel.setText("Click a die to hold it or score a category!");
 				
 			}));
 			
@@ -459,6 +462,7 @@ public class YahtzeeView implements Observer {
 		hBox.setPadding(new Insets(0, 20, 10, 20));
 		hBox.getChildren().addAll(player1Pane, player2Pane);
 		borderPane.setBottom(hBox);
+		hBox.setAlignment(Pos.CENTER);
 		
 		player1Pane.setDisable(true);
 		player2Pane.setDisable(true);
@@ -539,7 +543,7 @@ public class YahtzeeView implements Observer {
 				} else {
 					categoryLabels2[8].setText(String.valueOf(scoreUpdate.player.getScorecard().getUpperSection()));
 					categoryLabels2[9].setText("0");
-					categoryLabels1[10].setText(String.valueOf(scoreUpdate.player.getScorecard().getUpperSection()));
+					categoryLabels2[10].setText(String.valueOf(scoreUpdate.player.getScorecard().getUpperSection()));
 				}
 			}
 		}
@@ -574,7 +578,7 @@ public class YahtzeeView implements Observer {
 			String winner = controller.getWinner().getName();
 			Alert a = new Alert(Alert.AlertType.INFORMATION);
 			a.setHeaderText("WINNER: " + winner + "!");
-			a.setContentText(winner + "wins!");
+			a.setContentText(winner + " wins!");
 			a.showAndWait();
 			
 		}
@@ -582,8 +586,9 @@ public class YahtzeeView implements Observer {
 		player1Pane.setDisable(true);
 		player2Pane.setDisable(true);
 		
-		infoLabel.setText(controller.getCurrentPlayer().getName() + "'s Turn! Click Roll!");
-		
+		if (!controller.isGameOver()) {
+			infoLabel.setText(controller.getCurrentPlayer().getName() + "'s Turn! Click Roll!");
+		}
 	}
 	
 	private MenuBar setupMenu() {
@@ -591,7 +596,7 @@ public class YahtzeeView implements Observer {
 		Menu file = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem rules = new MenuItem("How To Play");
-		MenuItem exit = new MenuItem("Exit");
+		MenuItem exit = new MenuItem("Exit to Main Menu");
 		file.getItems().addAll(newGame, rules, new SeparatorMenuItem(), exit);
 		menuBar.getMenus().add(file);
 		
