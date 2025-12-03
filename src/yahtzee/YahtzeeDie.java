@@ -1,11 +1,13 @@
 package yahtzee;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class YahtzeeDie {
+public class YahtzeeDie implements Serializable {
 	private int value;
 	private boolean held;
 	private Random random = new Random();
+	private static final long serialVersionUID = 1L;
 	
 	public YahtzeeDie() {
 		roll();

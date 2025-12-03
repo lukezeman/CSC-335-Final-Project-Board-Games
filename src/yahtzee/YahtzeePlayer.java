@@ -1,9 +1,12 @@
 package yahtzee;
 
-public class YahtzeePlayer {
+import java.io.Serializable;
+
+public class YahtzeePlayer implements Serializable {
 	private String name;
 	private YahtzeeScorecard scorecard;
 	private YahtzeeDie[] dice;
+	private static final long serialVersionUID = 1L;
 	
 	public YahtzeePlayer(String name) {
 		this.name = name;
