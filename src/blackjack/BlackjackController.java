@@ -75,7 +75,7 @@ public class BlackjackController {
 	public void saveGame() {
 		try {
 			m.deleteObservers();
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("blackjack_save.dat"));
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("save_blackjack.dat"));
 			out.writeObject(m.getInstance());
 			out.close();
 		} catch (IOException e) {
@@ -84,12 +84,12 @@ public class BlackjackController {
 		}
 	}
 	public void loadGame() {
-		File f = new File("blackjack_save.dat");
+		File f = new File("save_blackjack.dat");
 		if (!f.exists()) {
 			return;
 		}
 		
-		try (ObjectInputStream in = new ObjectInputStream( new FileInputStream("blackjack_save.dat"))) {
+		try (ObjectInputStream in = new ObjectInputStream( new FileInputStream("save_blackjack.dat"))) {
 			BlackjackInstance instance = (BlackjackInstance) in.readObject();
 			m.setInstance(instance);
 		}
@@ -101,7 +101,7 @@ public class BlackjackController {
 		}
 	}
 	public void deleteSave() {
-		File f = new File("blackjack_save.dat");
+		File f = new File("save_blackjack.dat");
 		if (f.exists()) {
 			f.delete();
 		}

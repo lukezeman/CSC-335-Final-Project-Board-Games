@@ -52,7 +52,7 @@ public class CardView extends VBox {
             
             imageView.setImage(image);
             cardNameLabel.setText(card.toString());
-            System.out.println("Loaded card image: " + imagePath);
+            //System.out.println("Loaded card image: " + imagePath);
         } catch (Exception e) {
             System.err.println("Could not load image: " + card.getImageFileName());
             System.err.println("Error: " + e.getMessage());
@@ -88,7 +88,7 @@ public class CardView extends VBox {
             
             imageView.setImage(image);
             cardNameLabel.setText("Hidden");
-            System.out.println("Loaded card back");
+            //System.out.println("Loaded card back");
         } catch (Exception e) {
             System.err.println("Could not load card back: " + e.getMessage());
             cardPane.getChildren().clear();

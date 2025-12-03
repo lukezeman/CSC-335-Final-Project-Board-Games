@@ -27,6 +27,9 @@ public class BlackjackView implements Observer {
 	private BlackjackModel model;
 	private BlackjackController controller;
 	
+	private String p1Name;
+	private String p2Name;
+	
 	//private Label p1cards;
 	private Label p1CardsVal;
 	private Label p1Money;
@@ -55,25 +58,23 @@ public class BlackjackView implements Observer {
 	private Scene scene;
 	
 	public BlackjackView(BoardGamesView menuView) {
-		this.model = new BlackjackModel();
-		this.controller = new BlackjackController(model);
-		model.addObserver(this);
 		
-		this.menuView = menuView;
-		scene = setupScene();
-		
+		this(menuView, "Player 1", "Player 2");
 	}
 	
 	public BlackjackView(BoardGamesView mainMenu, String name1, String name2) {
 		// TODO Auto-generated constructor stub
+		this.model = new BlackjackModel();
+		this.controller = new BlackjackController(model);
+		model.addObserver(this);
+		
+		this.menuView = mainMenu;
+		this.p1Name = name1;
+		this.p2Name = name2;
+		scene = setupScene();
 	}
 
-	/*
-	 * When making your GUI, instead of setting up a stage and stuff, just
-	 * set up the scene you want in here and the BoardGamesView class will 
-	 * handle displaying this to the screen. Feel free to use the exitToMenu
-	 * methods in the menuView, as well as whatever other methods are added
-	 */
+	
 	private Scene setupScene() {
 		
 		BorderPane root = new BorderPane();
@@ -220,7 +221,13 @@ public class BlackjackView implements Observer {
 	            gameOverAlertShown = true;
 	            Alert gameOver = new Alert(Alert.AlertType.INFORMATION);
 	            gameOver.setTitle("Game Over!");
-	            gameOver.setContentText(controller.getWinner() + "!\n\n" +
+	            String winner = controller.getWinner();
+	            if (winner.equals("Player 1 wins")) {
+	                winner = p1Name + " wins";
+	            } else if (winner.equals("Player 2 wins")) {
+	                winner = p2Name + " wins";
+	            }
+	            gameOver.setContentText(winner + "!\n\n" +
 	                "Player 1: $" + controller.getP1money() + "\n" +
 	                "Player 2: $" + controller.getP2money());
 	            gameOver.setHeaderText("Game Over!");
@@ -228,12 +235,12 @@ public class BlackjackView implements Observer {
 	        }
 	    }
 	    else if (turn == 1 && gameStart) {
-	        whoseTurn.setText("Player 1's turn");
+	        whoseTurn.setText(p1Name + "'s turn");
 	        status.setText("");
 	        gameOverAlertShown = false;
 	    }
 	    else if (turn == 2 && gameStart) {
-	        whoseTurn.setText("Player 2's turn");
+	        whoseTurn.setText(p2Name + "'s turn");
 	        status.setText("");
 	    }
 	    else if (hasNoMoney) {
@@ -296,7 +303,7 @@ public class BlackjackView implements Observer {
 		box.setAlignment(Pos.CENTER);
 		box.setPrefWidth(350);
 		
-		Label title = new Label("Player " + i);
+		Label title = new Label(i == 1 ? p1Name : p2Name);
 		
 		if (i == 1) {
 			p1Display = new HBox(5);
