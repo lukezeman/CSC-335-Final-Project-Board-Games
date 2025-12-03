@@ -1,14 +1,16 @@
 package yahtzee;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class YahtzeeScorecard {
+public class YahtzeeScorecard implements Serializable {
 	private HashMap<YahtzeeCategory, Integer> scores = new HashMap<>();
 	private int yahtzeeBonus = 0;
 	private int upperSectionBonus = 0;
 	private int upperSection = 0;
 	private int lowerSection = 0;
 	private boolean upperBonusChecked = false;
+	private static final long serialVersionUID = 1L;
 	
 	protected void recordScore(YahtzeeCategory category, int[] dice) {
 		int score = category.calculateScore(dice);

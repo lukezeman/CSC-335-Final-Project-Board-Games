@@ -1,6 +1,9 @@
 package yahtzee;
 
 import view.BoardGamesView;
+
+import java.io.File;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.animation.KeyFrame;
@@ -61,6 +64,7 @@ public class YahtzeeView implements Observer {
 	private GridPane player2Pane;
 	private Button button;
 	private Label infoLabel;
+	private File saveFile = new File("save_yahtzee.dat");
 	
 	public YahtzeeView(BoardGamesView mainMenu) {
 		this.mainMenu = mainMenu;
@@ -70,7 +74,13 @@ public class YahtzeeView implements Observer {
 			dieImages[i] = new Image(getClass().getResourceAsStream("/dice/die" + (i+1) + ".png"));
 		}
 	    
-		startNewGame();
+		YahtzeeInstance loadedGame = YahtzeeInstance.loadGame();
+		
+		if (loadedGame == null) {
+			startNewGame();
+		} else {
+			setupUI(null, null, loadedGame);
+		}
 	}
 	
 	private void startNewGame() {
@@ -112,7 +122,7 @@ public class YahtzeeView implements Observer {
 			} if (name2.equals("Enter player 2's name!") || name2.isBlank()) {
 				name2 = "Player 2";
 			}
-			setupUI(name1, name2);
+			setupUI(name1, name2, null);
 		});
 		
 		pane.setBottom(start);
@@ -125,14 +135,26 @@ public class YahtzeeView implements Observer {
 		stage.setScene(scene);
 	}
 	
-	private void setupUI(String player1Name, String player2Name) {
-		model = new YahtzeeModel(player1Name, player2Name);
-		controller = new YahtzeeController(model);
+	private void setupUI(String player1Name, String player2Name, YahtzeeInstance loadedGame) {
+		if (loadedGame == null) {
+			model = new YahtzeeModel(player1Name, player2Name);
+			controller = new YahtzeeController(model);
+		} else {
+			model = new YahtzeeModel(loadedGame);
+			controller = new YahtzeeController(model);
+		}
 		model.addObserver(this);
 		borderPane = new BorderPane();
 		setupDiceandMenu();
 		setupButtonAndLabel();
 		setupScorecards();
+		
+		if (loadedGame == null) {
+	        categoryLabels1[0].setText(player1Name);
+	        categoryLabels2[0].setText(player2Name);
+	    } else {
+	        loadScorecard();  // ✅ Load the saved scores into the UI
+	    }
 		
 		categoryLabels1[0].setText(player1Name);
 		categoryLabels2[0].setText(player2Name);
@@ -142,6 +164,12 @@ public class YahtzeeView implements Observer {
 		stage.setTitle("Yahtzee");
 		stage.show();
 		stage.centerOnScreen();
+		
+		stage.setOnCloseRequest(event -> {
+			if (!controller.isGameOver()) {
+				controller.saveGame();
+			}
+		});
 	}
 	
 	private void setupDiceandMenu() {
@@ -581,6 +609,10 @@ public class YahtzeeView implements Observer {
 			a.setContentText(winner + " wins!");
 			a.showAndWait();
 			
+			if (saveFile.exists()) {
+				saveFile.delete();
+			}
+			
 		}
 		
 		player1Pane.setDisable(true);
@@ -601,6 +633,9 @@ public class YahtzeeView implements Observer {
 		menuBar.getMenus().add(file);
 		
 		newGame.setOnAction(event -> {
+			if (saveFile.exists()) {
+				saveFile.delete();
+			}
 			startNewGame();
 		});
 		
@@ -609,6 +644,9 @@ public class YahtzeeView implements Observer {
 		});
 		
 		exit.setOnAction(event -> {
+			if (!controller.isGameOver()) {
+				controller.saveGame();
+			}
 			mainMenu.exitToMenu();
 		});
 		
@@ -654,6 +692,58 @@ public class YahtzeeView implements Observer {
 		scene = new Scene(content, 650, 500);
 	    howToStage.setScene(scene);
 	    howToStage.show();
+	}
+	
+	private void loadScorecard() {
+	    // Load player 1's scores
+	    HashMap<YahtzeeCategory, Integer> player1Scores = controller.getPlayer1().getScorecard().getScores();
+	    for (int i = 0; i < categoryMapping.length; i++) {
+	        if (categoryMapping[i] != null && player1Scores.containsKey(categoryMapping[i])) {
+	            categoryLabels1[i].setText(String.valueOf(player1Scores.get(categoryMapping[i])));
+	            categoryLabels1[i].setBackground(
+	                new Background(
+	                    new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)
+	                )
+	            );
+	        }
+	    }
+	    
+	    // Load player 2's scores
+	    HashMap<YahtzeeCategory, Integer> player2Scores = controller.getPlayer2().getScorecard().getScores();
+	    for (int i = 0; i < categoryMapping.length; i++) {
+	        if (categoryMapping[i] != null && player2Scores.containsKey(categoryMapping[i])) {
+	            categoryLabels2[i].setText(String.valueOf(player2Scores.get(categoryMapping[i])));
+	            categoryLabels2[i].setBackground(
+	                new Background(
+	                    new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)
+	                )
+	            );
+	        }
+	    }
+	    
+	    // Update player names
+	    categoryLabels1[0].setText(controller.getPlayer1().getName());
+	    categoryLabels2[0].setText(controller.getPlayer2().getName());
+	    
+	    // Update totals/bonuses if applicable
+	    updateTotals(controller.getPlayer1(), categoryLabels1);
+	    updateTotals(controller.getPlayer2(), categoryLabels2);
+	}
+
+	private void updateTotals(YahtzeePlayer player, Label[] labels) {
+	    YahtzeeScorecard scorecard = player.getScorecard();
+	    
+	    if (scorecard.isUpperSectionFull()) {
+	        labels[8].setText(String.valueOf(scorecard.getUpperSection() - scorecard.getUpperSectionBonus()));
+	        labels[9].setText(String.valueOf(scorecard.getUpperSectionBonus()));
+	        labels[10].setText(String.valueOf(scorecard.getUpperSection()));
+	    }
+	    
+	    if (scorecard.isComplete()) {
+	        labels[20].setText(String.valueOf(scorecard.getUpperSection()));
+	        labels[21].setText(String.valueOf(scorecard.getLowerSection()));
+	        labels[22].setText(String.valueOf(scorecard.getGrandTotal()));
+	    }
 	}
 	
 	public Scene getScene() {

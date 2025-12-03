@@ -11,16 +11,13 @@ import java.io.ObjectOutputStream;
 public class YahtzeeInstance implements Serializable {
 	private YahtzeePlayer player1;
 	private YahtzeePlayer player2;
-	private YahtzeePlayer currentPlayer;
-	private int rollsRemaining;
-	
+	private YahtzeePlayer currentPlayer;	
 	private static final long serialVersionUID = 1L;
 	
 	public YahtzeeInstance(YahtzeeModel model) {
 		this.player1 = model.getPlayer1();
 		this.player2 = model.getPlayer2();
 		this.currentPlayer = model.getCurrentPlayer();
-		this.rollsRemaining = model.getRollsRemaining();
 	}
 	
 	protected YahtzeePlayer getPlayer1() {
@@ -33,10 +30,6 @@ public class YahtzeeInstance implements Serializable {
 	
 	protected YahtzeePlayer getCurrentPlayer() {
 		return currentPlayer;
-	}
-	
-	protected int getRollsRemaining() {
-		return rollsRemaining;
 	}
 	
 	protected void saveGame() {

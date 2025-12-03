@@ -21,7 +21,14 @@ public class YahtzeeModel extends Observable {
 		this.player1 = instance.getPlayer1();
 		this.player2 = instance.getPlayer2();
 		this.currentPlayer = instance.getCurrentPlayer();
-		this.rollsRemaining = instance.getRollsRemaining();
+		// Loads game at "checkpoint," saves at beginning of player's turn
+		this.rollsRemaining = 3;
+		
+		for (YahtzeeDie die : currentPlayer.getDice()) {
+			if (die.isHeld()) {
+				die.toggleHold();
+			}
+		}
 	}
 	
 	protected int[] rollDice() {
