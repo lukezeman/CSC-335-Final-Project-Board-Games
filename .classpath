@@ -9,6 +9,5 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="src" path="/csc335-reversi-gui"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

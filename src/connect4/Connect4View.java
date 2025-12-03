@@ -48,6 +48,10 @@ public class Connect4View implements Observer {
 		scene = newGame();
 	}
 	
+	public Connect4View(BoardGamesView mainMenu, String name1, String name2) {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Retrieves the scene of the Connect4 Game
 	 * @return Scene object which holds the GUI of the Connect4 Game

@@ -64,6 +64,10 @@ public class BlackjackView implements Observer {
 		
 	}
 	
+	public BlackjackView(BoardGamesView mainMenu, String name1, String name2) {
+		// TODO Auto-generated constructor stub
+	}
+
 	/*
 	 * When making your GUI, instead of setting up a stage and stuff, just
 	 * set up the scene you want in here and the BoardGamesView class will 

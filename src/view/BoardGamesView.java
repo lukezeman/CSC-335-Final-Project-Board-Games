@@ -1,5 +1,7 @@
 package view;
 
+import java.io.File;
+
 import blackjack.BlackjackView;
 import checkers.CheckersView;
 import connect4.Connect4View;
@@ -97,27 +99,43 @@ public class BoardGamesView extends Application {
 		gridPane.add(yahtzee, 1, 1);
 		
 		blackjack.setOnMouseClicked(e -> {
-			BlackjackView newBlackjackGame = new BlackjackView(this);
-			stage.setScene(newBlackjackGame.getScene());
-			stage.centerOnScreen();
+			if (!new File("save_blackjack.dat").exists()) {
+				PlayerNamingScreen.namingScreen(this, "Blackjack");
+			} else {
+				BlackjackView newBlackjackGame = new BlackjackView(this);
+				stage.setScene(newBlackjackGame.getScene());
+				stage.centerOnScreen();
+			}
 		});
 		
 		checkers.setOnMouseClicked(e -> {
-			CheckersView newCheckersGame = new CheckersView(this);
-			stage.setScene(newCheckersGame.getScene());
-			stage.centerOnScreen();
+			if (!new File("save_checkers.dat").exists()) {
+				PlayerNamingScreen.namingScreen(this, "Checkers");
+			} else {
+				CheckersView newCheckersGame = new CheckersView(this);
+				stage.setScene(newCheckersGame.getScene());
+				stage.centerOnScreen();
+			}
 		});
 		
 		connect4.setOnMouseClicked(e -> {
-			Connect4View newConnect4Game = new Connect4View(this);
-			stage.setScene(newConnect4Game.getScene());
-			stage.centerOnScreen();
+			if (!new File("save_connect4.dat").exists()) {
+				PlayerNamingScreen.namingScreen(this, "Connect 4");
+			} else {
+				Connect4View newConnect4Game = new Connect4View(this);
+				stage.setScene(newConnect4Game.getScene());
+				stage.centerOnScreen();
+			}
 		});
 		
 		yahtzee.setOnMouseClicked(e -> {
-			YahtzeeView newYahtzeeGame = new YahtzeeView(this);
-			stage.setScene(newYahtzeeGame.getScene());
-			stage.centerOnScreen();
+			if (!new File("save_yahtzee.dat").exists()) {
+				PlayerNamingScreen.namingScreen(this, "Yahtzee");
+			} else {
+				YahtzeeView newYahtzeeGame = new YahtzeeView(this);
+				stage.setScene(newYahtzeeGame.getScene());
+				stage.centerOnScreen();
+			}
 		});
 		
 		window.setCenter(gridPane);

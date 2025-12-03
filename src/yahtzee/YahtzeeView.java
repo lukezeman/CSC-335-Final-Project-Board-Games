@@ -1,7 +1,7 @@
 package yahtzee;
 
 import view.BoardGamesView;
-
+import view.PlayerNamingScreen;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Observable;
@@ -19,7 +19,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -76,63 +75,19 @@ public class YahtzeeView implements Observer {
 	    
 		YahtzeeInstance loadedGame = YahtzeeInstance.loadGame();
 		
-		if (loadedGame == null) {
-			startNewGame();
-		} else {
-			setupUI(null, null, loadedGame);
-		}
+		setupUI(null, null, loadedGame);
+
 	}
 	
-	private void startNewGame() {
-		Stage playerScreen = new Stage();
-		playerScreen.setTitle("Welcome to YAHTZEE!");
-		BorderPane pane = new BorderPane();
-		HBox hBox = new HBox(50);
-		VBox player1 = new VBox(10);
-		VBox player2 = new VBox(10);
+	public YahtzeeView(BoardGamesView mainMenu, String player1, String player2) {
+		this.mainMenu = mainMenu;
+		this.stage = mainMenu.getStage();
 		
-		Label player1Label = new Label("Player 1");
-		player1Label.setFont(Font.font("System", FontWeight.BOLD, 20));
-		Label player2Label = new Label("Player 2");
-		player2Label.setFont(Font.font("System", FontWeight.BOLD, 20));
+		for (int i = 0; i < 6; i++) {
+			dieImages[i] = new Image(getClass().getResourceAsStream("/dice/die" + (i+1) + ".png"));
+		}
 		
-		TextField player1Name = new TextField("Enter player 1's name!");
-		TextField player2Name = new TextField("Enter player 2's name!");
-		
-		player1.getChildren().addAll(player1Label, player1Name);
-		player2.getChildren().addAll(player2Label, player2Name);
-		hBox.getChildren().addAll(player1, player2);
-		hBox.setPadding(new Insets(50));
-		hBox.setAlignment(Pos.CENTER);
-		
-		Label topLabel = new Label("YAHTZEE!");
-		topLabel.setFont(Font.font("System", FontWeight.BOLD, FontPosture.ITALIC, 30));
-		pane.setTop(topLabel);
-		pane.setCenter(hBox);
-		BorderPane.setAlignment(topLabel, Pos.CENTER);
-		
-		Button start = new Button("Start!");
-		start.setOnAction(event -> {
-			playerScreen.close();
-			
-			String name1 = player1Name.getText();
-			String name2 = player2Name.getText();
-			if (name1.equals("Enter player 1's name!") || name1.isBlank()) {
-				name1 = "Player 1";
-			} if (name2.equals("Enter player 2's name!") || name2.isBlank()) {
-				name2 = "Player 2";
-			}
-			setupUI(name1, name2, null);
-		});
-		
-		pane.setBottom(start);
-		BorderPane.setAlignment(start, Pos.CENTER);
-		start.setPrefSize(100, 50);
-		start.setFont(Font.font("System", 15));
-		pane.setPadding(new Insets(20));
-		
-		scene = new Scene(pane, 500, 300);
-		stage.setScene(scene);
+		setupUI(player1, player2, null);
 	}
 	
 	private void setupUI(String player1Name, String player2Name, YahtzeeInstance loadedGame) {
@@ -636,7 +591,8 @@ public class YahtzeeView implements Observer {
 			if (saveFile.exists()) {
 				saveFile.delete();
 			}
-			startNewGame();
+			
+			PlayerNamingScreen.namingScreen(mainMenu, "Yahtzee");
 		});
 		
 		rules.setOnAction(event -> {
