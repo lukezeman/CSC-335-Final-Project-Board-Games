@@ -19,7 +19,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 //import javafx.stage.Stage;
 import view.BoardGamesView;
-
+/**
+ * This class represents what is needed to display
+ * the Blackjack game in the GUI
+ * 
+ * @author Aidin Miller
+ */
 @SuppressWarnings("deprecation")
 public class BlackjackView implements Observer {
 	private BoardGamesView menuView;
@@ -56,12 +61,23 @@ public class BlackjackView implements Observer {
 	private boolean gameOverAlertShown = false;
 	
 	private Scene scene;
-	
+	/**
+	 * Constructor for class that sets player names Player 1
+	 * and Player 2 by default
+	 * 
+	 * @param menuView The main menu that will be used in the GUI
+	 */
 	public BlackjackView(BoardGamesView menuView) {
 		
 		this(menuView, "Player 1", "Player 2");
 	}
-	
+	/**
+	 * Another constructor that allows for entering player names
+	 * 
+	 * @param mainMenu The main menu that will be used in the GUI
+	 * @param name1 Name of 1st player
+	 * @param name2 Name of 2nd player
+	 */
 	public BlackjackView(BoardGamesView mainMenu, String name1, String name2) {
 		// TODO Auto-generated constructor stub
 		this.model = new BlackjackModel();
@@ -74,7 +90,10 @@ public class BlackjackView implements Observer {
 		scene = setupScene();
 	}
 
-	
+	/**
+	 * 
+	 * @return
+	 */
 	private Scene setupScene() {
 		
 		BorderPane root = new BorderPane();
@@ -152,7 +171,11 @@ public class BlackjackView implements Observer {
 		Scene scene = new Scene(root, 800, 600);
 		return scene;
 	}
-	
+	/**
+	 * A getter that gets the scene
+	 * 
+	 * @return The current scene
+	 */
 	public Scene getScene() {
 		return scene;
 	}
