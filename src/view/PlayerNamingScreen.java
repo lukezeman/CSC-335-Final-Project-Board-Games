@@ -57,15 +57,19 @@ public class PlayerNamingScreen {
 			if (game.equals("Blackjack")) {
 				BlackjackView newBlackjackGame = new BlackjackView(mainMenu, name1, name2);
 				mainMenu.getStage().setScene(newBlackjackGame.getScene());
+				mainMenu.getStage().centerOnScreen();
 			} else if (game.equals("Checkers")) {
 				CheckersView newCheckersGame = new CheckersView(mainMenu, name1, name2);
 				mainMenu.getStage().setScene(newCheckersGame.getScene());
+				mainMenu.getStage().centerOnScreen();
 			} else if (game.equals("Connect 4")) {
 				Connect4View newConnect4Game = new Connect4View(mainMenu, name1, name2);
 				mainMenu.getStage().setScene(newConnect4Game.getScene());
+				mainMenu.getStage().centerOnScreen();
 			} else {
 				YahtzeeView newYahtzeeGame = new YahtzeeView(mainMenu, name1, name2);
 				mainMenu.getStage().setScene(newYahtzeeGame.getScene());
+				mainMenu.getStage().centerOnScreen();
 			} 
 
 		});
