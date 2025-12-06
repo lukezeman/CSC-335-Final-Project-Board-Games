@@ -9,7 +9,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-
+/**
+ * This class represents the display of card images
+ * 
+ * @author Aidin Miller
+ * @version 1.0
+ */
 public class CardView extends VBox {
 	private static final int CARD_WIDTH = 75;
     private static final int CARD_HEIGHT = 105;
@@ -18,6 +23,9 @@ public class CardView extends VBox {
     private ImageView imageView;
     private Rectangle cardBack;
     private Label cardNameLabel;
+    /**
+     * Constructor for the class
+     */
     public CardView() {
     	this.setAlignment(Pos.CENTER);
     	this.setSpacing(3);
@@ -41,6 +49,11 @@ public class CardView extends VBox {
         
         this.getChildren().addAll(cardPane, cardNameLabel);
     }
+    /**
+     * This function takes a card input and displays the image on the GUI
+     * 
+     * @param card The card object that will be displayed
+     */
     public void setCard(Card card) {
     	try {
             String imagePath = "/cards/" + card.getImageFileName();
@@ -59,6 +72,11 @@ public class CardView extends VBox {
             showTextCard(card);
         }
     }
+    /**
+     * This method is for if the image cannot be loaded
+     * 
+     * @param card The card to represent as text
+     */
 	private void showTextCard(Card card) {
 		// TODO Auto-generated method stub
 		Rectangle bg = new Rectangle(CARD_WIDTH, CARD_HEIGHT);
@@ -78,6 +96,9 @@ public class CardView extends VBox {
         cardPane.getChildren().addAll(bg, text);
         cardNameLabel.setText(card.toString());
 	}
+	/**
+	 * This function displays the back of a card
+	 */
 	public void showCardBack() {
         try {
             Image image = new Image(getClass().getResourceAsStream("/cards/card_back.png"));
@@ -96,6 +117,9 @@ public class CardView extends VBox {
             cardNameLabel.setText("Hidden");
         }
     }
+	/**
+	 * This function clears the cards being displayed
+	 */
 	public void clear() {
         imageView.setImage(null);
         cardNameLabel.setText("");

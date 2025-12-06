@@ -1,7 +1,12 @@
 package blackjack;
 
 import java.util.Observable;
-
+/**
+ * This class contains the game logic for a Blackjack game
+ * 
+ * @author Aidin Miller
+ * @version 1.0
+ */
 @SuppressWarnings("deprecation")
 public class BlackjackModel extends Observable {
 	private Deck d;//deck object
@@ -16,7 +21,9 @@ public class BlackjackModel extends Observable {
 	private int turn;//1 is player 1's turn, 2 is player 2's turn, 0 is game over
 	private boolean p1Done;
 	private boolean p2Done;
-	
+	/**
+	 * Constructor for the class
+	 */
 	public BlackjackModel() {
 		d = new Deck();
 		p1 = new Hand();
@@ -33,6 +40,13 @@ public class BlackjackModel extends Observable {
 		p1Done = false;
 		p2Done = false;
 	}
+	/**
+	 * Starts a new round of Blackjack
+	 * 
+	 * @param bet1 Player 1's bet amount
+	 * @param bet2 Player 2's bet amount
+	 * @return true if the game starts, false otherwise
+	 */
 	public boolean start(int bet1, int bet2) {
 		if (bet1 > p1money || bet1 <= 0 || bet2 > p2money || bet2 <= 0) {
 			return false;
@@ -66,6 +80,11 @@ public class BlackjackModel extends Observable {
 		notifyObserversOfChange();
 		return true;
 	}
+	/**
+	 * This function deals a card from the deck
+	 * 
+	 * @return the card that was dealt
+	 */
 	private Card deal() {
 		if (d.getCards().isEmpty()) {
 			d.resetDeck();
@@ -74,6 +93,9 @@ public class BlackjackModel extends Observable {
 		d.removeCard(c);
 		return c;
 	}
+	/**
+	 * This function deals a card to the current player
+	 */
 	public void hit() {
 		if (isGameOver) {
 			return;
@@ -98,6 +120,9 @@ public class BlackjackModel extends Observable {
 		}
 		notifyObserversOfChange();
 	}
+	/**
+	 * This function ends a player's turn
+	 */
 	public void stand() {
 		if (isGameOver) {
 			return;
@@ -117,6 +142,9 @@ public class BlackjackModel extends Observable {
 		}
 		notifyObserversOfChange();
 	}
+	/**
+	 * This function does the dealer's turn
+	 */
 	private void dealerTurn() {
 		// TODO Auto-generated method stub
 		if (!p1.isBust() || !p2.isBust()) {
@@ -128,6 +156,11 @@ public class BlackjackModel extends Observable {
 		updateMoney(1);
 		updateMoney(2);
 	}
+	/**
+	 * This function calculates the earnings for the given player
+	 * 
+	 * @param whichPlayer an int representing which player to calculate
+	 */
 	private void updateMoney(int whichPlayer) {
 	    Hand handToCalc;
 	    int bet;
@@ -168,43 +201,108 @@ public class BlackjackModel extends Observable {
 	        }
 	    }
 	}
-	
+	/**
+	 * Get player 1's hand
+	 * 
+	 * @return Player 1's hand object
+	 */
 	public Hand getP1() {
 		return p1;
 	}
+	/**
+	 * Get player 2's hand
+	 * 
+	 * @return Player 2's hand object
+	 */
 	public Hand getP2() {
 		return p2;
 	}
+	/**
+	 * Get dealer's hand
+	 * 
+	 * @return dealer's hand object
+	 */
 	public Hand getDealer() {
 		return dealer;
 	}
+	/**
+	 * This function gets player 1's money
+	 * 
+	 * @return the amount of money player 1 has
+	 */
 	public int getP1Money() {
 		return p1money;
 	}
+	/**
+	 * This function gets player 2's money
+	 * 
+	 * @return the amount of money player 2 has
+	 */
 	public int getP2Money() {
 		return p2money;
 	}
+	/**
+	 * This function gets the amount of player 1's bet
+	 * 
+	 * @return an int for player 1's bet
+	 */
 	public int getP1Bet() {
 		return p1bet;
 	}
+	/**
+	 * This function represents player 2's bet
+	 * 
+	 * @return an int for player 2's bet
+	 */
 	public int getP2Bet() {
 		return p2bet;
 	}
+	/**
+	 * Checks if the game is over
+	 * 
+	 * @return true if the game is over, false otherwise
+	 */
 	public boolean getIsOver() {
 		return isGameOver;
 	}
+	/**
+	 * This function sets the status of the game
+	 * 
+	 * @param boo true if over, false otherwise
+	 */
 	public void setIsOver(Boolean boo) {
 		isGameOver = boo;
 	}
+	/**
+	 * This function checks to see if player 1 finished
+	 * 
+	 * @return true if player 1 is done, false otherwise
+	 */
 	public boolean isP1Done() {
 		return p1Done;
 	}
+	/**
+	 * This function checks to see if player 2 finished
+	 * 
+	 * @return true if player 2 is done, false otherwise
+	 */
 	public boolean isP2Done() {
 		return p2Done;
 	}
+	/**
+	 * Gets the current turn
+	 * 
+	 * @return 1 if player 1, 2 if player 2, 0 otherwise
+	 */
 	public int getTurn() {
 		return turn;
 	}
+	/**
+	 * This function checks the current status of the player
+	 * 
+	 * @param player 1 for player 1, 2 for player 2
+	 * @return a string representing whether a player lost or won
+	 */
 	public String getStatus(int player) {
 		Hand h;
 		if (player == 1) {
@@ -213,6 +311,9 @@ public class BlackjackModel extends Observable {
 		else {
 			h = p2;
 		}
+		if (h.isBlackjack()) {
+			return "BLACKJACK!!!!!";
+		}
 		if (h.isBust()) {
 			return "Bust";
 		}
@@ -220,9 +321,7 @@ public class BlackjackModel extends Observable {
 			return "Player "
 					+ player + " wins";
 		}
-		if (h.isBlackjack()) {
-			return "BLACKJACK!!!!!";
-		}
+		
 		if (player == 1 && !p1Done) {
 			return "Player 1's turn...";
 		}
@@ -240,9 +339,19 @@ public class BlackjackModel extends Observable {
 			return "Dealer wins";
 		}
 	}
+	/**
+	 * Gets an instance of the game for saving
+	 * 
+	 * @return a BlackjackInstance of the current game state
+	 */
 	public BlackjackInstance getInstance() {
 		return new BlackjackInstance(d,p1,p2,dealer,p1money,p2money,p1bet,p2bet,isGameOver,turn,p1Done,p2Done);
 	}
+	/**
+	 * Restores the game state
+	 * 
+	 * @param i the BlackjackInstance to restore from
+	 */
 	public void setInstance(BlackjackInstance i) {
 		d = i.getD();
 		p1 = i.getP1();
@@ -258,6 +367,9 @@ public class BlackjackModel extends Observable {
 		p2Done = i.getP2Done();
 		notifyObserversOfChange();
 	}
+	/**
+	 * Resets the game to its initial state
+	 */
 	public void reset() {
 		d = new Deck();
 		p1 = new Hand();
@@ -273,6 +385,9 @@ public class BlackjackModel extends Observable {
 		p2Done = false;
 		notifyObserversOfChange();
 	}
+	/**
+	 * Notifies observers of changes
+	 */
 	private void notifyObserversOfChange() {
 		// TODO Auto-generated method stub
 		setChanged();
