@@ -77,6 +77,13 @@ public class BlackjackModel extends Observable {
 			p1Done = true;
 			turn = 2;
 		}
+		if (p2.isBlackjack()) {
+			p2Done = true;
+			if (p1Done) {
+				turn = 0;
+				dealerTurn();
+			}
+		}
 		notifyObserversOfChange();
 		return true;
 	}
@@ -105,7 +112,7 @@ public class BlackjackModel extends Observable {
 			if (p1.isBust()) {
 				p1Done = true;
 				turn = 2;
-				if (p2Done) {
+				if (p2Done || p2.isBlackjack()) {
 					dealerTurn();
 				}
 			}

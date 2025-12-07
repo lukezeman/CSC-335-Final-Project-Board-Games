@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 //import javafx.stage.Stage;
 import view.BoardGamesView;
+import view.PlayerNamingScreen;
 /**
  * This class represents what is needed to display
  * the Blackjack game in the GUI
@@ -106,8 +107,7 @@ public class BlackjackView implements Observer {
 		MenuItem newGame = new MenuItem("New Game");
 		newGame.setOnAction(e -> {
 			controller.resetGame();
-			gameOverAlertShown = false;
-			updateDisplay();
+			PlayerNamingScreen.namingScreen(menuView, "Blackjack");
 		});
 		
 		MenuItem exit = new MenuItem("Exit");
