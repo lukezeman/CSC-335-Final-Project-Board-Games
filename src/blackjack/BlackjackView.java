@@ -128,7 +128,6 @@ public class BlackjackView implements Observer {
 		});
 		MenuItem exit2 = new MenuItem("Exit Without Saving");
 		exit2.setOnAction(e -> {
-			controller.deleteSave();
 			menuView.exitToMenu();
 		});
 		fileMenu.getItems().addAll(newGame, new SeparatorMenuItem(), exit, exit2);
