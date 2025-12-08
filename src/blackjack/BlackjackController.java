@@ -145,6 +145,38 @@ public class BlackjackController {
 		m.setIsOver(getP1money() == 0 || getP2money() == 0);
 	}
 	/**
+	 * Gets player 1's name
+	 * 
+	 * @return player 1's name
+	 */
+	public String getP1Name() {
+		return m.getP1Name();
+	}
+	/**
+	 * Gets player 2's name
+	 * 
+	 * @return player 2's name
+	 */
+	public String getP2Name() {
+		return m.getP2Name();
+	}
+	/**
+	 * Sets player 1's name
+	 * 
+	 * @param name player 1's name
+	 */
+	public void setP1Name(String name) {
+		m.setP1Name(name);
+	}
+	/**
+	 * Sets player 2's name
+	 * 
+	 * @param name player 2's name
+	 */
+	public void setP2Name(String name) {
+		m.setP2Name(name);
+	}
+	/**
 	 * Determines the winner of the game
 	 * 
 	 * @return "Player 1 wins", "Player 2 wins", or "Tie"

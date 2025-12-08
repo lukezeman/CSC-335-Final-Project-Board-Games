@@ -46,6 +46,7 @@ public class CardView extends VBox {
         cardPane.getChildren().add(imageView);
         
         cardNameLabel = new Label("");
+        cardNameLabel.setVisible(false);
         
         this.getChildren().addAll(cardPane, cardNameLabel);
     }
