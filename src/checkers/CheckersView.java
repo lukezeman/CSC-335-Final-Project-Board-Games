@@ -1,17 +1,20 @@
 package checkers;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-import javafx.animation.PathTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -25,29 +28,23 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import view.BoardGamesView;
 
 @SuppressWarnings("deprecation")
 public class CheckersView implements Observer {
 
 	private BoardGamesView menuView;
+	private CheckersInstance currInstance;
 	
 	private static final int gridLength = 8;
 
 	private CheckersController controller;
+	private String player1;
+	private String player2;
 
 	private BorderPane mainWindow;
-	private Scene gameScene;
-	// 8*8 grid
 	private GridPane gameGrid;
 	private BoardSquare[][] cellPanes;
-	private BoardSquare[] currSelectedAsPotentialMoves;
 
 	private Label playerTurnTracker;
 	
@@ -55,14 +52,19 @@ public class CheckersView implements Observer {
 	
 	public CheckersView(BoardGamesView menuView) {
 		this.menuView = menuView;
-		currSelectedAsPotentialMoves = new BoardSquare[4];
+		this.player1 = "Player 1";
+		this.player2 = "Player 2";
 		scene = setupScene();
 		startGame();
 	}
 	
 	
-	public CheckersView(BoardGamesView mainMenu, String name1, String name2) {
-		// TODO Auto-generated constructor stub
+	public CheckersView(BoardGamesView menuView, String name1, String name2) {
+		this.menuView = menuView;
+		this.player1 = name1;
+		this.player2 = name2;
+		scene = setupScene();
+		startGame();
 	}
 
 
@@ -73,22 +75,16 @@ public class CheckersView implements Observer {
 	 * methods in the menuView, as well as whatever other methods are added
 	 */
 	private Scene setupScene() {
-		
 		this.controller = new CheckersController();
 		this.mainWindow = new BorderPane();
 		this.gameGrid = new GridPane();
-		
 		// Set up the Nodes for the top, middle, and bottom parts of mainWindow
 		setUpTop();
 		setUpMiddle();
 		setUpBottom();
-		//System.out.println("Set up the main window");
 		// Set up size of the scene in terms of the size of the board
 		Scene gameScene = new Scene(mainWindow, 66 * gridLength + 16, (66 * gridLength + 16) + 40);
 		
-		
-		
-		//System.out.println("Set up the scene");
 		// Process the mouse clicks of the user and add the move it corresponds to
 		gameScene.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -96,8 +92,52 @@ public class CheckersView implements Observer {
 				handleUserInput(arg0.getX(), arg0.getY());
 			}
 		});
-		//System.out.println("Set up the mouse handler");
 		return gameScene;
+	}
+	
+	/**
+	 * Loads whatever instance of the checkers game is currently saved in the
+	 * file "save_checkers.dat". If the file does not exist, then it will simply 
+	 * return null. Finally, it deletes the file to prevent save corruption issues.
+	 * @return The ObjectInputStream representing the saved game.
+	 */
+	private ObjectInputStream loadSave() {
+		File currSave = new File("save_checkers.dat");
+		ObjectInputStream save;
+		if (currSave.exists()) {
+			try {
+				save = new ObjectInputStream(new FileInputStream(currSave));
+			} catch (IOException e) {
+				save = null;
+			}
+		} else {
+			save = null;
+		}
+		return save;
+	}
+	
+	/**
+	 * 
+	 */
+	private void saveGame() {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("save_checkers.dat"));
+			out.writeObject(currInstance);
+			out.close();
+		} catch (IOException e) {
+			return;
+		}
+	}
+	
+	/**
+	 * Deletes whatever saved instance of the game currently exists. This is typically
+	 * done once a game is finished or a new save is instanciated.
+	 */
+	private void deleteSave() {
+		File currSave = new File("save_checkers.dat");
+		if (currSave.exists()) {
+			currSave.delete();
+		}
 	}
 	
 	/**
@@ -114,24 +154,40 @@ public class CheckersView implements Observer {
 		MenuBar bar = new MenuBar();
 		Menu menu = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
-		MenuItem exit = new MenuItem("Exit");
+		MenuItem saveExit = new MenuItem("Exit and Save");
+		MenuItem noSaveExit = new MenuItem("Exit without Saving");
 		// Start a new game when the item is pressed
 		newGame.setOnAction(e -> {
-			//startNewGame();
+			if (!controller.isGameOver()) {
+				deleteSave();
+				startGame();
+			}
 		});
-		
-		exit.setOnAction(e ->{
+		// Saves and exits the game when the item is pressed
+		saveExit.setOnAction(e ->{
+			if (!controller.isGameOver()) {
+				saveGame();
+			} else {
+				deleteSave();
+			}
 			menuView.exitToMenu();
 		});
+		// Deletes the current save and exits the game when the item is pressed
+		noSaveExit.setOnAction(e ->{
+			deleteSave();
+			menuView.exitToMenu();
+		});
+		
 		// Connect the bar menu item objects to each other and add to top of window
 		menu.getItems().add(newGame);
-		menu.getItems().add(exit);
+		menu.getItems().add(saveExit);
+		menu.getItems().add(noSaveExit);
 		bar.getMenus().add(menu);
 		mainWindow.setTop(bar);
 	}
 	
 	/**
-	 * Sets up the main reversi board
+	 * Sets up the main checkers board
 	 * <p>
 	 * 
 	 * StackPane is centered within the BorderPane mainWindow with a 6 pixel
@@ -188,13 +244,8 @@ public class CheckersView implements Observer {
 	 * adds a label that tracks the score of the white pieces and the black pieces
 	 */
 	private void setUpBottom() {
-		playerTurnTracker = new Label("Player One's Turn");
+		playerTurnTracker = new Label(player1 + "'s Turn");
 		mainWindow.setBottom(playerTurnTracker);
-	}
-	
-	
-	public Scene getScene() {
-		return scene;
 	}
 	
 	/**
@@ -215,13 +266,10 @@ public class CheckersView implements Observer {
 			int roundedX = (int) Math.round(xPos) - 9;
 			// Remove 48 pixel offset from boundary and make first valid pixel 0
 			int roundedY = (int) Math.round(yPos) - 35;
-			//System.out.println("X: " + roundedX / 66 + ". Y: " + roundedY / 66);
-			// Because of weird row/column order things, you gotta swap the x/y order
-			controller.takeInput(roundedY / 66, roundedX / 66);
-			if (controller.isPlayerOne()) {
-				playerTurnTracker.setText("Player One's Turn");
-			} else {
-				playerTurnTracker.setText("Player Two's Turn");
+			// Deactivate the board once the game has finished
+			if (!controller.isGameOver()) {
+				// Because of weird row/column order things, you gotta swap the x/y order
+				controller.takeInput(roundedY / 66, roundedX / 66);
 			}
 		}
 	}
@@ -241,14 +289,27 @@ public class CheckersView implements Observer {
 		userBlocker.showAndWait();
 	}
 	
+	/**
+	 * 
+	 */
 	private void startGame() {
-		controller.startGame(this);
+		ObjectInputStream savedGame = loadSave();
+		controller.startGame(this, savedGame, player1, player2);
 	}
 	
+	/**
+	 * 
+	 * @param selectedIndex
+	 * @return
+	 */
 	private boolean isNull(int[] selectedIndex) {
 		return selectedIndex[0] == -1 && selectedIndex[1] == -1;
 	}
 	
+	/**
+	 * 
+	 * @param newBoardState
+	 */
 	private void movePiece(CheckersInstance newBoardState) {
 		int[][] newBoardGrid = newBoardState.getBoard();
 		int[] sourceIndex = newBoardState.getSelectedIndex();
@@ -270,11 +331,21 @@ public class CheckersView implements Observer {
 		clearSelectedMoves(newBoardState);
 	}
 	
-	
 	@Override
+	/**
+	 * 
+	 */
 	public void update(Observable o, Object arg) {
 		CheckersInstance newBoardState = (CheckersInstance) arg;
-		//gameGrid.getChildren().clear();
+		this.currInstance = newBoardState;
+		this.player1 = currInstance.getPlayer1();
+		this.player2 = currInstance.getPlayer2();
+		boolean isPlayerOnesTurn = currInstance.isPlayerOnesTurn();
+		if (isPlayerOnesTurn) {
+			playerTurnTracker.setText(player1 + "'s Turn");
+		} else {
+			playerTurnTracker.setText(player2 + "'s Turn");
+		}
 		if (!isNull(newBoardState.getMovedIndex())) {
 			movePiece(newBoardState);
 		} else {
@@ -284,45 +355,30 @@ public class CheckersView implements Observer {
 				for (int j = 0; j < currRow.length; j++) {
 					int currSquareVal = currRow[j];
 					setCellPane(cellPanes[i][j], currSquareVal);
-					//gameGrid.add(cellPanes[i][j], j, i);
 				}
 			}
 		}
+		if (controller.isGameOver()) {
+			endGame();
+		}
 		
-		/*
-		 if (!isNull(newBoardState.getMovedIndex())) {
-			
-			System.out.println("We should be moving");
-			animateTravel(newBoardState.getSelectedIndex()[0], newBoardState.getSelectedIndex()[1],
-					newBoardState.getMovedIndex()[0], newBoardState.getMovedIndex()[1]);
-			System.out.println("We should be done moving");
-		} else if (!isNull(newBoardState.getSelectedIndex())) {
-			
-			System.out.println("We should be showing the potential moves");
-			showPotentialMoves(newBoardState);
-		} else {
-		 */
 	}
 	
 	/**
 	 * 
-	 * @param newBoardState
-	
-	private void showPotentialMoves(CheckersInstance newBoardState) {
-		clearSelectedMoves();
-		int[][] newPotentialCoords = newBoardState.getSelectedPossibleMoves();
-		for (int i = 0; i < newPotentialCoords.length; i++) {
-			int[] currCoord = newPotentialCoords[i];
-			if (!isNull(currCoord)) {
-				int rowIndex = currCoord[0];
-				int colIndex = currCoord[1];
-				BoardSquare currSelectedPotentialPane = cellPanes[rowIndex][colIndex];
-				currSelectedPotentialPane.setPotentialMove(controller.isPlayerOne());
-				currSelectedAsPotentialMoves[i] = currSelectedPotentialPane;
-			}
-		}
-	}
 	 */
+	private void endGame() {
+		Alert endGameAlert = new Alert(AlertType.INFORMATION);
+		endGameAlert.setTitle("GAME OVER!");
+		endGameAlert.setHeaderText("GAME OVER!");
+		if (controller.playerOneWon()) {
+			endGameAlert.setContentText(player1 + " Won");
+		} else {
+			endGameAlert.setContentText(player2 + " Won");
+		}
+		endGameAlert.show();
+	}
+	
 	
 	/**
 	 * Clears all the selected moves currently on the screen. This should occur
@@ -336,7 +392,6 @@ public class CheckersView implements Observer {
 		int rowVal;
 		int colVal;
 		for (int[] currPossibleMove: selectedPossibleMoves) {
-			//System.out.println(Arrays.toString(currPossibleMove));
 			if (!isNull(currPossibleMove)) {
 				// Clear all the dots from the view since a move was taken
 				rowVal = currPossibleMove[0];
@@ -346,6 +401,11 @@ public class CheckersView implements Observer {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param modifiedSquare
+	 * @param currBoardState
+	 */
 	private void setCellPane(BoardSquare modifiedSquare, int currBoardState) {
 		switch (currBoardState) {
 		case 0:
@@ -375,81 +435,11 @@ public class CheckersView implements Observer {
 			handleError("ERROR: Unrecognized board state val: " + currBoardState);
 		}
 	}
-	
-	private Node getNodeAt(GridPane grid, int row, int col) {
-	    for (Node n : grid.getChildren()) {
-	        Integer r = GridPane.getRowIndex(n);
-	        Integer c = GridPane.getColumnIndex(n);
-	        if ((r == null ? 0 : r) == row && (c == null ? 0 : c) == col) {
-	            return n;
-	        }
-	    }
-	    return null;
-	}
-	
-	private void animateTravel(int startX, int startY, int endX, int endY) {
-		
-		System.out.println("startX: " + startX + ". startY: " + startY);
-		System.out.println("endX: " + endX + ". endY: " + endY);
-		BoardSquare source = cellPanes[startX][startY];
-		BoardSquare target = cellPanes[endX][endY];
 
-		
-		//System.out.println("Target sanity check:");
-		//System.out.println("cellPanes ref = " + target);
-		//System.out.println("GridPane lookup = " + getNodeAt(gameGrid, endX, endY));
-		
-		System.out.println("\n\nChildren of source square:");
-		for (Node n : source.getChildren()) {
-		    System.out.println(" - " + n + " (class " + n.getClass().getSimpleName() + ")");
-		    System.out.println(n + "  opacity=" + n.getOpacity() + "\n\n");
-		}
-		
-		gameGrid.layout();
-		
-		System.out.println("\n\nChildren of target square:");
-		for (Node n : target.getChildren()) {
-		    System.out.println(" - " + n + " (class " + n.getClass().getSimpleName() + ")");
-		    System.out.println(n + "  opacity=" + n.getOpacity() + "\n\n");
-		}
-		target.setCheckersPiece(false);
-		
-		
-		
-		//System.out.println("Updating target square at: " + endX + ", " + endY);
-		//System.out.println("Actual square reference: " + target);
-		//System.out.println(gameGrid.getChildren());
-		//target.setCheckersPiece(source.isPieceOwnedByPlayer1());
-		//if (source.isPiecePromoted()) {
-			//target.promotePiece();
-		//}
-		//target.promotePiece();
-		//source.promotePiece();
-		//System.out.println("Target size: " + target.getWidth() + " x " + target.getHeight());
-		
-		
-		//source.clear();
-		//System.out.println(target.getChildren());
-		/*
-		Node piece = source.getCheckersPiece();
-		
-		
-		Path path = new Path();
-		path.getElements().add(new MoveTo(500, 500));
-		path.getElements().add(new LineTo(300, 200));
-		path.getElements().add(new LineTo(300, 400));
-		path.getElements().add(new LineTo(450, 350));
-		PathTransition pathTransition = new PathTransition();
-		pathTransition.setDuration(Duration.millis(5000));
-		pathTransition.setNode(piece);
-		pathTransition.setPath(path);
-		pathTransition.play();
-		Group root = new Group(piece);
-		Scene scene = new Scene(root, 600, 300);
-		System.out.println("Worked perfectly");
-		*/
+	
+	public Scene getScene() {
+		return this.scene;
 	}
-
 }
 
 

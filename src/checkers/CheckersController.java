@@ -1,14 +1,11 @@
 package checkers;
 
-public class CheckersController {
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-	private CheckersView view;
+public class CheckersController {
 	private CheckersModel model;
-	private boolean isPlayerOne;
-	
-	public CheckersController() {
-		this.isPlayerOne = true;
-	}
 	
 	public boolean isGameOver() {
 		/*
@@ -19,18 +16,62 @@ public class CheckersController {
 		 * This is not counted as a draw, but rather as a victory for the
 		 * other side.
 		 */
+		int count = 0;
+		
+		if (model == null) {
+			return false;
+		}
+		HashMap<ArrayList<Integer>, int[][]> playerOnePieces = model.getPlayerOneLegalMoves();
+		for (int[][] currPieceMoves: playerOnePieces.values()) {
+			for (int[] currMove: currPieceMoves) {
+				if (!isNull(currMove)) {
+					count += 1;
+				}
+			}
+		}
+		if (count == 0) {
+			return true;
+		}
+		count = 0;
+		HashMap<ArrayList<Integer>, int[][]> playerTwoPieces = model.getPlayerTwoLegalMoves();
+		for (int[][] currPieceMoves: playerTwoPieces.values()) {
+			for (int[] currMove: currPieceMoves) {
+				if (!isNull(currMove)) {
+					count += 1;
+				}
+			}
+		}
+		if (count == 0) {
+			return true;
+		}
+		
+		
 		return false;
 	}
 	
+	private boolean isNull(int[] move) {
+		return move[0] == -1 && move[1] == -1;
+	}
+	
+	public boolean playerOneWon() {
+		int count = 0;
+		HashMap<ArrayList<Integer>, int[][]> playerOnePieces = model.getPlayerOneLegalMoves();
+		for (int[][] currPieceMoves: playerOnePieces.values()) {
+			for (int[] currMove: currPieceMoves) {
+				if (!isNull(currMove)) {
+					count += 1;
+				}
+			}
+		}
+		if (count > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	public void takeInput(int xCoord, int yCoord) {
-		boolean switchPlayer = model.takeInput(xCoord, yCoord, isPlayerOne);
-		// If the input given by the user passed the turn somehow, switch the player
-		if (switchPlayer) {
-			//System.out.println("here :)");
-			isPlayerOne = !(isPlayerOne);
-			// Clear 
-		}
+		model.takeInput(xCoord, yCoord);
 	}
 	
 	/**
@@ -39,12 +80,7 @@ public class CheckersController {
 	 * core stuff starts working.
 	 * @param view
 	 */
-	public void startGame(CheckersView view) {
-		this.view = view;
-		this.model = new CheckersModel(view);
-	}
-	
-	public boolean isPlayerOne() {
-		return isPlayerOne;
+	public void startGame(CheckersView view, ObjectInputStream currSave, String player1, String player2) {
+		this.model = new CheckersModel(view, currSave, player1, player2);
 	}
 }
