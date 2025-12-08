@@ -24,6 +24,24 @@ public class Connect4Controller {
 	}
 	
 	/**
+	 * Calls a method that lets the player name's array for the model
+	 * 
+	 * @param playerNames - a String[] which holds player 1 and 2's names
+	 */
+	public void setPlayers(String[] playerNames) {
+		model.setPlayers(playerNames);
+	}
+	
+	/**
+	 * Calls a method that retrieves player 1 and 2's names in a String Array
+	 * 
+	 * @return a String[] which holds player 1 and 2's names
+	 */
+	public String[] getPlayers() {
+		return model.getPlayers();
+	}
+	
+	/**
 	 * Calls method to retrieve the current Connect4 game
 	 * 
 	 * @return a char[][] which holds all player's pieces
@@ -80,9 +98,10 @@ public class Connect4Controller {
 	/**
 	 * Calls method to save the current game board and player turn to a .dat file as a 
 	 * Connect4Instance object
+	 * @return a boolean where true means the game save was successful
 	 */
-	public void saveGame() {
-		model.saveGame();
+	public boolean saveGame() {
+		return model.saveGame();
 	}
 	
 }

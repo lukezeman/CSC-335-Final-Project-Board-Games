@@ -22,6 +22,7 @@ public class Connect4Instance implements Serializable {
 	
 	private char[][] board;
 	private char playerTurn;
+	private String[] players;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,6 +33,15 @@ public class Connect4Instance implements Serializable {
 	public Connect4Instance(Connect4Model model) {
 		board = model.getBoard();
 		playerTurn = model.getTurn();
+		players = model.getPlayers();
+	}
+	
+	/**
+	 * Retrieves player 1 and 2's names in a String Array
+	 * @return a String[] which holds player 1 and 2's names
+	 */
+	public String[] getPlayers() {
+		return players;
 	}
 	
 	/**

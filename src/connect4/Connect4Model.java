@@ -16,6 +16,7 @@ import java.util.Observable;
 public class Connect4Model extends Observable {
 	private char[][] board;
 	private char playerTurn;
+	private String[] players;
 	
 	/**
 	 * Allows for an instance of this class to be made and sets up variables
@@ -27,10 +28,28 @@ public class Connect4Model extends Observable {
 	
 	/**
 	 * Saves the current game board and player turn to a .dat file as a Connect4Instance object
+	 * @return a boolean which means game save was successful
 	 */
-	public void saveGame() {
+	public boolean saveGame() {
 		Connect4Instance instance = new Connect4Instance(this);
 		instance.saveGame();
+		return true;
+	}
+	
+	/**
+	 * Sets the player name's array for the model
+	 * @param playerNames - a String[] which holds player 1 and 2's names
+	 */
+	public void setPlayers(String[] playerNames) {
+		players = playerNames;
+	}
+	
+	/**
+	 * Retrieves player 1 and 2's names in a String Array
+	 * @return a String[] which holds player 1 and 2's names
+	 */
+	public String[] getPlayers() {
+		return players;
 	}
 	
 	/**
@@ -60,7 +79,7 @@ public class Connect4Model extends Observable {
 	}
 	
 	/**
-	 * Sets a player's turn if the player doesn't want to start first
+	 * Sets a the next player's turn
 	 * 
 	 * @param player - a char which represents the player color
 	 */

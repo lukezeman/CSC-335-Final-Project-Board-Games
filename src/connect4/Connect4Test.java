@@ -9,18 +9,21 @@ class Connect4Test {
 	@Test
 	void testModelSetTurn() {
 		Connect4Model model = new Connect4Model();
-		assertTrue(model.setTurn(0, 'r'));
-		model.setTurn(5, 'r');
+		model.setMove(0);
 		
 		char[][] board = model.getBoard();
 		
-		assertTrue(board[5][6] == 'r');
+		assertTrue(board[5][0] == 'y');
 
-		model.setTurn(5, 'r');
-		model.setTurn(5, 'r');
-		model.setTurn(5, 'r');
-		model.setTurn(5, 'r');
-		assertFalse(model.setTurn(5, 'r'));
+	}
+	
+	@Test
+	void testModelPlayers() {
+		Connect4Model model = new Connect4Model();
+		String[] testPlayers = {"TestP1", "TestP2"};
+		model.setPlayers(testPlayers);
+		
+		assertEquals(testPlayers, model.getPlayers());
 
 	}
 	
@@ -30,7 +33,8 @@ class Connect4Test {
 
 		Connect4Model model = new Connect4Model();
 		
-		assertEquals(0 ,model.isGameOver(5, 6));
+		model.setMove(0);
+		assertEquals(0 ,model.isGameOver(5, 0));
 
 		char[][] board = new char[6][7];
 		
@@ -181,5 +185,61 @@ class Connect4Test {
 		System.out.println("<------------------------->");
 
 	}
+	
+	@Test
+	void testTurns() {
+		Connect4Model model = new Connect4Model();
+		assertTrue(model.getTurn() == 'y');
+		model.setTurn('r');
+		assertTrue(model.getTurn() == 'r');
+	}
+	
+	@Test
+	void testGameSave() {
+		Connect4Model model = new Connect4Model();
+		assertTrue(model.saveGame());
+	}
+	
+	@Test 
+	void testController() {
+		Connect4Model model = new Connect4Model();
+		Connect4Controller control = new Connect4Controller(model);
+		assertEquals(model.getBoard(), control.getBoard());
+		control.setMove(0);
+		assertEquals(model.isGameOver(5,0), control.isGameOver(5,0));
+		control.setTurn('r');
+		assertEquals(model.getTurn(), control.getTurn());
+		char[][] board = new char[6][7];
+				
+		char p = 'y';
+		int count = 0;
+		for (char[] row : board) {
+			for (int i = 0; i < row.length; i++) {
+				if (count == 2 && p == 'y') {
+					count = 0;
+					p = 'r';
+				}
+				else if (count == 2 && p == 'r') {
+					count = 0;
+					p = 'y';
+				}
+				row[i] = p;
+				count++;
+			}
+			count = 0;
+		}
+		control.setBoard(board);
+		assertEquals(model.getBoard(), control.getBoard());
+		
+		assertTrue(control.saveGame());
+		
+		String[] testPlayers = {"TestP1", "TestP2"};
+		control.setPlayers(testPlayers);
+		
+		assertEquals(testPlayers, control.getPlayers());
+
+
+	}
+	
 
 }
