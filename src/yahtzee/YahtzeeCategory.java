@@ -113,9 +113,11 @@ public enum YahtzeeCategory {
 	
 	private int checkStraight(int[] dice, int straight) {
 		int inARow = 1;
+		int maxInARow = 1;
 		for (int i = 0; i < dice.length - 1; i++) {
 			if (dice[i] + 1 == dice[i+1]) {
 				inARow++;
+				maxInARow = Math.max(maxInARow, inARow);
 			} else if (dice[i] != dice[i+1]){
 				inARow = 1;
 			}
