@@ -20,6 +20,8 @@ public class BlackjackInstance implements Serializable{
 	private int turn;
 	private boolean p1Done;
 	private boolean p2Done;
+	private String p1Name;
+	private String p2Name;
 	/**
 	 * Constructor for the class
 	 * 
@@ -35,9 +37,11 @@ public class BlackjackInstance implements Serializable{
 	 * @param turn int representing the current turn
 	 * @param p1Done boolean representing whether player 1 is done
 	 * @param p2Done boolean representing whether player 2 is done
+	 * @param p1Name player 1 name
+	 * @param p2Name player 2 name
 	 */
 	public BlackjackInstance(Deck d, Hand p1, Hand p2, Hand dealer, int p1money, int p2money, int p1bet, int p2bet,
-			boolean isGameOver, int turn, boolean p1Done, boolean p2Done) {
+			boolean isGameOver, int turn, boolean p1Done, boolean p2Done, String p1Name, String p2Name) {
 		// TODO Auto-generated constructor stub
 		this.d = d;
 		this.p1 = p1;
@@ -51,6 +55,8 @@ public class BlackjackInstance implements Serializable{
 		this.turn = turn;
 		this.p1Done = p1Done;
 		this.p2Done = p2Done;
+		this.p1Name = p1Name;
+		this.p2Name = p2Name;
 	}
 
 	/**
@@ -160,6 +166,22 @@ public class BlackjackInstance implements Serializable{
 	public boolean getP2Done() {
 		// TODO Auto-generated method stub
 		return p2Done;
+	}
+	/**
+	 * Gets player 1 name
+	 * 
+	 * @return player 1 name
+	 */
+	public String getP1Name() {
+		return p1Name;
+	}
+	/**
+	 * Gets player 2 name
+	 * 
+	 * @return player 2 name
+	 */
+	public String getP2Name() {
+		return p2Name;
 	}
 
 }

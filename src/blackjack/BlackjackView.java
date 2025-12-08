@@ -60,6 +60,9 @@ public class BlackjackView implements Observer {
 	private HBox p2Display;
 	private HBox dealerDisplay;
 	
+	private Label p1TitleLabel;
+	private Label p2TitleLabel;
+	
 	private boolean gameOverAlertShown = false;
 	
 	private Scene scene;
@@ -89,6 +92,8 @@ public class BlackjackView implements Observer {
 		this.menuView = mainMenu;
 		this.p1Name = name1;
 		this.p2Name = name2;
+		controller.setP1Name(name1);
+		controller.setP2Name(name2);
 		scene = setupScene();
 	}
 
@@ -170,6 +175,10 @@ public class BlackjackView implements Observer {
 		root.setBottom(buttonsCol);
 		
 		controller.loadGame();
+		p1Name = controller.getP1Name();
+		p2Name = controller.getP2Name();
+		p1TitleLabel.setText(p1Name);
+		p2TitleLabel.setText(p2Name);
 		Scene scene = new Scene(root, 800, 600);
 		return scene;
 	}
@@ -249,14 +258,16 @@ public class BlackjackView implements Observer {
 	            Alert gameOver = new Alert(Alert.AlertType.INFORMATION);
 	            gameOver.setTitle("Game Over!");
 	            String winner = controller.getWinner();
+	            String p1 = controller.getP1Name();
+	            String p2 = controller.getP2Name();
 	            if (winner.equals("Player 1 wins")) {
-	                winner = p1Name + " wins";
+	                winner = p1 + " wins";
 	            } else if (winner.equals("Player 2 wins")) {
-	                winner = p2Name + " wins";
+	                winner = p2 + " wins";
 	            }
 	            gameOver.setContentText(winner + "!\n\n" +
-	                "Player 1: $" + controller.getP1money() + "\n" +
-	                "Player 2: $" + controller.getP2money());
+	                p1 + ": $" + controller.getP1money() + "\n" +
+	                p2 + ": $" + controller.getP2money());
 	            gameOver.setHeaderText("Game Over!");
 	            gameOver.showAndWait();
 	        }
@@ -340,6 +351,7 @@ public class BlackjackView implements Observer {
 		Label title = new Label(i == 1 ? p1Name : p2Name);
 		
 		if (i == 1) {
+			p1TitleLabel = title;
 			p1Display = new HBox(5);
 			p1Display.setAlignment(Pos.CENTER);
 	        
@@ -356,6 +368,7 @@ public class BlackjackView implements Observer {
 	        box.getChildren().addAll(title, p1Display, p1CardsVal, p1Money, bet);
 		}
 		else {
+			p2TitleLabel = title;
 			p2Display = new HBox(5);
 	        p2Display.setAlignment(Pos.CENTER);
 	        

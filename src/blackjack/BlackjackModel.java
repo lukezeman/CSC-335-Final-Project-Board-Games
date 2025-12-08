@@ -21,6 +21,8 @@ public class BlackjackModel extends Observable {
 	private int turn;//1 is player 1's turn, 2 is player 2's turn, 0 is game over
 	private boolean p1Done;
 	private boolean p2Done;
+	private String p1Name;
+	private String p2Name;
 	/**
 	 * Constructor for the class
 	 */
@@ -39,6 +41,8 @@ public class BlackjackModel extends Observable {
 		turn = 1;
 		p1Done = false;
 		p2Done = false;
+		p1Name = "Player 1";
+		p2Name = "Player 2";
 	}
 	/**
 	 * Starts a new round of Blackjack
@@ -305,6 +309,38 @@ public class BlackjackModel extends Observable {
 		return turn;
 	}
 	/**
+	 * Gets player 1 name
+	 * 
+	 * @return player 1 name
+	 */
+	public String getP1Name() {
+		return p1Name;
+	}
+	/**
+	 * Gets player 2 name
+	 * 
+	 * @return player 2 name
+	 */
+	public String getP2Name() {
+		return p2Name;
+	}
+	/**
+	 * Sets player 1 name
+	 * 
+	 * @param name player 1 name
+	 */
+	public void setP1Name(String name) {
+		this.p1Name = name;
+	}
+	/**
+	 * Sets player 2 name
+	 * 
+	 * @param name player 2 name
+	 */
+	public void setP2Name(String name) {
+		this.p2Name = name;
+	}
+	/**
 	 * This function checks the current status of the player
 	 * 
 	 * @param player 1 for player 1, 2 for player 2
@@ -312,11 +348,14 @@ public class BlackjackModel extends Observable {
 	 */
 	public String getStatus(int player) {
 		Hand h;
+		String playerName;
 		if (player == 1) {
 			h = p1;
+			playerName = p1Name;
 		}
 		else {
 			h = p2;
+			playerName = p2Name;
 		}
 		if (h.isBlackjack()) {
 			return "BLACKJACK!!!!!";
@@ -325,19 +364,17 @@ public class BlackjackModel extends Observable {
 			return "Bust";
 		}
 		if (dealer.isBust()) {
-			return "Player "
-					+ player + " wins";
+			return playerName + " wins";
 		}
 		
 		if (player == 1 && !p1Done) {
-			return "Player 1's turn...";
+			return playerName + "'s turn...";
 		}
 		else if (player == 2 && !p2Done) {
-			return "Player 2's turn...";
+			return playerName + "'s turn...";
 		}
 		if (h.getValue() > dealer.getValue()) {
-			return "Player "
-					+ player + " wins";
+			return playerName + " wins";
 		}
 		else if (h.getValue() == dealer.getValue()) {
 			return "Push";
@@ -352,7 +389,7 @@ public class BlackjackModel extends Observable {
 	 * @return a BlackjackInstance of the current game state
 	 */
 	public BlackjackInstance getInstance() {
-		return new BlackjackInstance(d,p1,p2,dealer,p1money,p2money,p1bet,p2bet,isGameOver,turn,p1Done,p2Done);
+		return new BlackjackInstance(d,p1,p2,dealer,p1money,p2money,p1bet,p2bet,isGameOver,turn,p1Done,p2Done, p1Name, p2Name);
 	}
 	/**
 	 * Restores the game state
@@ -372,6 +409,8 @@ public class BlackjackModel extends Observable {
 		turn = i.getTurn();
 		p1Done = i.getP1Done();
 		p2Done = i.getP2Done();
+		p1Name = i.getP1Name();
+		p2Name = i.getP2Name();
 		notifyObserversOfChange();
 	}
 	/**
