@@ -848,4 +848,5 @@ class BlackjackTests {
     	model.stand();
     	assertTrue(model.getStatus(1).equals("Dealer wins"));
     }
+    
 }
