@@ -123,9 +123,9 @@ public enum YahtzeeCategory {
 			}
 		}
 		
-		if (straight == 1 && inARow >= 4) {
+		if (straight == 1 && maxInARow >= 4) {
 			return 30;
-		} else if (straight == 2 && inARow == 5) {
+		} else if (straight == 2 && maxInARow == 5) {
 			return 40;
 		}
 		
