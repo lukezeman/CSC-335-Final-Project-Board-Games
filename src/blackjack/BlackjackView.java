@@ -53,6 +53,7 @@ public class BlackjackView implements Observer {
 	private Button start;
 	private Button hit;
 	private Button stand;
+	private Button doubleButton;
 	private Label whoseTurn;
 	private Label status;
 	
@@ -115,12 +116,22 @@ public class BlackjackView implements Observer {
 			PlayerNamingScreen.namingScreen(menuView, "Blackjack");
 		});
 		
-		MenuItem exit = new MenuItem("Exit");
+		MenuItem exit = new MenuItem("Save And Exit");
 		exit.setOnAction(e -> {
-			controller.saveGame();
+			if (!controller.isGameOver()) {
+				controller.saveGame();
+			}
+			else {
+				controller.deleteSave();
+			}
 			menuView.exitToMenu();
 		});
-		fileMenu.getItems().addAll(newGame, new SeparatorMenuItem(), exit);
+		MenuItem exit2 = new MenuItem("Exit Without Saving");
+		exit2.setOnAction(e -> {
+			controller.deleteSave();
+			menuView.exitToMenu();
+		});
+		fileMenu.getItems().addAll(newGame, new SeparatorMenuItem(), exit, exit2);
 		menuBar.getMenus().add(fileMenu);
 		
 		root.setTop(menuBar);
@@ -167,7 +178,11 @@ public class BlackjackView implements Observer {
 		stand.setOnAction(e -> controller.stand());
 		stand.setDisable(true);
 		
-		buttons.getChildren().addAll(start, hit, stand);
+		doubleButton = new Button("Double");
+		doubleButton.setOnAction(e -> controller.doubleDown());
+		doubleButton.setDisable(true);
+		
+		buttons.getChildren().addAll(start, hit, stand, doubleButton);
 		whoseTurn = new Label("Place bets");
 		status = new Label("");
 		
@@ -246,6 +261,13 @@ public class BlackjackView implements Observer {
 	    p2Bet.setDisable(inProg || hasNoMoney);
 	    hit.setDisable(!inProg);
 	    stand.setDisable(!inProg);
+	    if (turn == 1) {
+	        doubleButton.setDisable(!controller.canDouble(1));
+	    } else if (turn == 2) {
+	        doubleButton.setDisable(!controller.canDouble(2));
+	    } else {
+	        doubleButton.setDisable(true);
+	    }
 	    
 	    if (turn == 0 && gameStart) {
 	        whoseTurn.setText("Game Over");

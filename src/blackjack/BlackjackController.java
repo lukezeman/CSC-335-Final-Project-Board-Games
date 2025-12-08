@@ -177,6 +177,21 @@ public class BlackjackController {
 		m.setP2Name(name);
 	}
 	/**
+	 * Checks if the current player can double down
+	 * 
+	 * @param player 1 for Player 1, 2 for Player 2
+	 * @return true if player can double down, false otherwise
+	 */
+	public boolean canDouble(int player) {
+	    return m.canDouble(player);
+	}
+	/**
+	 * Performs a double down action
+	 */
+	public void doubleDown() {
+	    m.doubleDown();
+	}
+	/**
 	 * Determines the winner of the game
 	 * 
 	 * @return "Player 1 wins", "Player 2 wins", or "Tie"

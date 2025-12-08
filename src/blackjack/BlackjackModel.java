@@ -341,6 +341,51 @@ public class BlackjackModel extends Observable {
 		this.p2Name = name;
 	}
 	/**
+	 * Checks if the current player can double down
+	 * 
+	 * @param player 1 for Player 1, 2 for Player 2
+	 * @return true if player can double down, false otherwise
+	 */
+	public boolean canDouble(int player) {
+	    Hand h = (player == 1) ? p1 : p2;
+	    int money = (player == 1) ? p1money : p2money;
+	    int bet = (player == 1) ? p1bet : p2bet;
+	    return h.cardsInHand() == 2 && money >= bet;
+	}
+	/**
+	 * Performs a double down action
+	 */
+	public void doubleDown() {
+	    if (isGameOver) {
+	        return;
+	    }
+	    
+	    if (turn == 1 && !p1Done && canDouble(1)) {
+	        p1money -= p1bet;
+	        p1bet *= 2;
+	        p1.addCard(deal());
+	        p1Done = true;
+	        turn = 2;
+	        
+	        if (p2Done || p2.isBlackjack()) {
+	            p2Done = true;
+	            dealerTurn();
+	        }
+	        
+	        notifyObserversOfChange();
+	    }
+	    else if (turn == 2 && !p2Done && canDouble(2)) {
+	        p2money -= p2bet;
+	        p2bet *= 2;
+	        p2.addCard(deal());
+	        p2Done = true;
+	        turn = 0;
+	        dealerTurn();
+	        
+	        notifyObserversOfChange();
+	    }
+	}
+	/**
 	 * This function checks the current status of the player
 	 * 
 	 * @param player 1 for player 1, 2 for player 2

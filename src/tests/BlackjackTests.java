@@ -848,4 +848,21 @@ class BlackjackTests {
     	model.stand();
     	assertTrue(model.getStatus(1).equals("Dealer wins"));
     }
+    @Test
+    public void testCanDouble() {
+    	BlackjackModel model = new BlackjackModel();
+    	BlackjackController controller = new BlackjackController(model);
+    	controller.startGame(50, 50);
+    	while (model.getP1().isBlackjack() || model.getP2().isBlackjack()) {
+    		model = new BlackjackModel();
+    		controller = new BlackjackController(model);
+    		controller.startGame(50,50);
+    	}
+    	assertTrue(model.canDouble(1));
+    	assertTrue(controller.canDouble(1));
+    	assertTrue(model.canDouble(2));
+    	assertTrue(controller.canDouble(2));
+    	controller.doubleDown();
+    	controller.doubleDown();
+    }
 }
