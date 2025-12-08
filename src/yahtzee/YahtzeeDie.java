@@ -18,19 +18,19 @@ public class YahtzeeDie implements Serializable {
 		value = random.nextInt(6) + 1;
 	}
 	
-	protected void toggleHold() {
+	public void toggleHold() {
 		held = !held;
 	}
 	
-	protected void reset() {
+	public void reset() {
 		held = false;
 	}
 	
-	protected int getValue() {
+	public int getValue() {
 		return value;
 	}
 	
-	protected boolean isHeld() {
+	public boolean isHeld() {
 		return held;
 	}
 }

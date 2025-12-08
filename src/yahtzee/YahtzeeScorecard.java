@@ -42,7 +42,7 @@ public class YahtzeeScorecard implements Serializable {
 		return true;
 	}
 	
-	protected boolean isCategoryAvailable(YahtzeeCategory category) {
+	public boolean isCategoryAvailable(YahtzeeCategory category) {
 		return !scores.containsKey(category);
 	}
 	
@@ -61,19 +61,19 @@ public class YahtzeeScorecard implements Serializable {
 		upperBonusChecked = true;
 	}
 	
-	protected HashMap<YahtzeeCategory, Integer> getScores() {
+	public HashMap<YahtzeeCategory, Integer> getScores() {
 		return scores;
 	}
 	
-	protected int getYahtzeeBonus() {
+	public int getYahtzeeBonus() {
 		return yahtzeeBonus;
 	}
 	
-	protected int getUpperSectionBonus() {
+	public int getUpperSectionBonus() {
 		return upperSectionBonus;
 	}
 	
-	protected int getGrandTotal() {
+	public int getGrandTotal() {
 		return upperSection + lowerSection;
 	}
 	
@@ -85,11 +85,11 @@ public class YahtzeeScorecard implements Serializable {
 		return upperBonusChecked;
 	}
 	
-	protected int getUpperSection() {
+	public int getUpperSection() {
 		return upperSection;
 	}
 	
-	protected int getLowerSection() {
+	public int getLowerSection() {
 		return lowerSection;
 	}
 	

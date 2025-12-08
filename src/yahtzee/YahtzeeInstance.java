@@ -20,15 +20,15 @@ public class YahtzeeInstance implements Serializable {
 		this.currentPlayer = model.getCurrentPlayer();
 	}
 	
-	protected YahtzeePlayer getPlayer1() {
+	public YahtzeePlayer getPlayer1() {
 		return player1;
 	}
 	
-	protected YahtzeePlayer getPlayer2() {
+	public YahtzeePlayer getPlayer2() {
 		return player2;
 	}
 	
-	protected YahtzeePlayer getCurrentPlayer() {
+	public YahtzeePlayer getCurrentPlayer() {
 		return currentPlayer;
 	}
 	

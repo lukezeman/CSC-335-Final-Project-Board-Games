@@ -216,7 +216,7 @@ public class YahtzeeView implements Observer {
 		button.setFont(Font.font("System", 20));
 
 		button.setOnAction(e -> {
-			int[] values = model.rollDice();
+			int[] values = controller.rollDice();
 			button.setDisable(true);
 			for (int i = 0; i < 5; i++) {
 				diceViews[i].setVisible(true);
