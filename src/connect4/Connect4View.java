@@ -313,7 +313,6 @@ public class Connect4View implements Observer {
 		// Exit without saving
 		MenuItem exit = new MenuItem("Exit Without Saving");
 		exit.setOnAction(e -> {
-			if (file.exists()) file.delete();
 			menuView.exitToMenu();
 		});
 		menu.getItems().add(newGame);

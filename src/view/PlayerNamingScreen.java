@@ -1,3 +1,12 @@
+/**
+ * @author Achilles Soto
+ * @author Charlie Cain
+ * @author Luke Zeman
+ * @author Aidin Miller
+ * Course: CSC335
+ * File: PlayerNmaingScreenjava
+ * Creates a GUI for setting player names
+ */
 package view;
 
 import blackjack.BlackjackView;
@@ -17,8 +26,17 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import yahtzee.YahtzeeView;
 
+/**
+ * Creates a GUI which allows the user's to type a name they want
+ */
 public class PlayerNamingScreen {
 	
+	/**
+	 * Presents a view to the GUI to assign player name's 
+	 * 
+	 * @param mainMenu - a BoardsGameView object used to update the stage
+	 * @param game - String for a specific game
+	 */
 	public static void namingScreen(BoardGamesView mainMenu, String game) {		
 		BorderPane pane = new BorderPane();
 		
@@ -46,6 +64,15 @@ public class PlayerNamingScreen {
 		
 	}
 	
+	/**
+	 * Creates a button to start a game, which also could auto assign the user names
+	 * 
+	 * @param player1Name - String which represents player1
+	 * @param player2Name - String which represents player2
+	 * @param mainMenu - a BoardsGameView object used to update the stage
+	 * @param game - String for a specific game
+	 * @return a Button object that could auto assign user names and/or start a game
+	 */
 	private static Button setUpStart(TextField player1Name, TextField player2Name
 			, BoardGamesView mainMenu, String game) {
 		Button start = new Button("Start!");
@@ -62,7 +89,13 @@ public class PlayerNamingScreen {
 		return start;
 	}
 	
-	
+	/**
+	 * Sets up the HBoxes which hold the player's name
+	 * 
+	 * @param player1Name - String which represents player1
+	 * @param player2Name - String which represents player2
+	 * @return a HBox object which holds player name
+	 */
 	private static HBox setUpHBox(TextField player1Name, TextField player2Name) {
 		HBox hBox = new HBox(50);
 		VBox player1 = new VBox(10);
@@ -81,6 +114,14 @@ public class PlayerNamingScreen {
 		return hBox;
 	}
 	
+	/**
+	 * Selects the appropriate GUI presentation based on the game String
+	 * 
+	 * @param player1Name - String which represents player1
+	 * @param player2Name - String which represents player2
+	 * @param mainMenu - a BoardsGameView object used to update the stage
+	 * @param game - String for a specific game
+	 */
 	private static void selectGame(BoardGamesView mainMenu, String game, String name1, String name2) {
 		if (game.equals("Blackjack")) {
 			BlackjackView newBlackjackGame = new BlackjackView(mainMenu, name1, name2);
