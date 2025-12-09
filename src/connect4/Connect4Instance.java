@@ -48,7 +48,7 @@ public class Connect4Instance implements Serializable {
 	 * Retrieves and returns the upcoming player's turn
 	 * @return a char which represents a player
 	 */
-	protected char getTurn() {
+	public char getTurn() {
 		return playerTurn;
 	}
 	
@@ -56,7 +56,7 @@ public class Connect4Instance implements Serializable {
 	 * Retrieves and returns a Connect4 game board
 	 * @return an array of arrays of chars which is the game board
 	 */
-	protected char[][] getBoard(){
+	public char[][] getBoard(){
 		return board;
 	}
 	
@@ -72,7 +72,7 @@ public class Connect4Instance implements Serializable {
 				
 	}
 	
-	/*
+	/**
 	 * Loads in a Connect4 game from a .dat file if it exists, returning the Connect4Instance object
 	 * @return the board game object, ReversiBoard
 	 */
@@ -88,5 +88,4 @@ public class Connect4Instance implements Serializable {
 		// File doesn't exist
 		return null;
 	}
-
 }

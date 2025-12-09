@@ -313,7 +313,6 @@ public class Connect4View implements Observer {
 		// Exit without saving
 		MenuItem exit = new MenuItem("Exit Without Saving");
 		exit.setOnAction(e -> {
-			if (file.exists()) file.delete();
 			menuView.exitToMenu();
 		});
 		menu.getItems().add(newGame);
@@ -324,6 +323,8 @@ public class Connect4View implements Observer {
 	
 	/**
 	 * Creates/loads a game of Connect4 to present as a GUI
+	 * @param player1 - String that represents player1's name
+	 * @param player2 - String that represents player2's name
 	 * @return Scene object to be used on the Super Awesome Games main menu
 	 */
 	private Scene newGame(String player1, String player2) {

@@ -24,6 +24,7 @@ public class Connect4Model extends Observable {
 	public Connect4Model() {
 		board = new char[6][7];
 		playerTurn = 'y';
+		players = new String[] {"Player 1", "Player 2"};
 	}
 	
 	/**

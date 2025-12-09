@@ -18,15 +18,12 @@ class YahtzeeTests {
 		model = new YahtzeeModel("Player 1", "Player 2");
 		controller = new YahtzeeController(model);
 		
-		// Clean up any existing save file
 		File saveFile = new File("save_yahtzee.dat");
 		if (saveFile.exists()) {
 			saveFile.delete();
 		}
 	}
-	
-	// ========== CONTROLLER/MODEL INTEGRATION TESTS ==========
-	
+		
 	@Test
 	void testRollDice() {
 		int[] dice = controller.rollDice();
@@ -64,9 +61,7 @@ class YahtzeeTests {
 		assertEquals("Player 1", controller.getPlayer1().getName());
 		assertEquals("Player 2", controller.getPlayer2().getName());
 	}
-	
-	// ========== CATEGORY SCORING TESTS ==========
-	
+		
 	@Test
 	void testOnesScoring() {
 		int[] dice = {1, 1, 1, 2, 3};
@@ -210,9 +205,7 @@ class YahtzeeTests {
 		int[] dice2 = {6, 6, 6, 6, 6};
 		assertEquals(30, YahtzeeCategory.CHANCE.calculateScore(dice2));
 	}
-	
-	// ========== RECORDING SCORES TESTS ==========
-	
+		
 	@Test
 	void testRecordScore() {
 	    int[] dice = {1, 1, 1, 2, 3};
@@ -220,7 +213,6 @@ class YahtzeeTests {
 	    
 	    controller.recordScore(YahtzeeCategory.ONES, dice);
 	    
-	    // After recording, we switched to Player 2, so check Player 1's scorecard directly
 	    assertFalse(controller.getPlayer1().getScorecard().isCategoryAvailable(YahtzeeCategory.ONES));
 	}
 	
@@ -237,7 +229,6 @@ class YahtzeeTests {
 	
 	@Test
 	void testUpperSectionBonusAwarded() {
-		// Score 63+ in upper section
 		controller.recordScore(YahtzeeCategory.ONES, new int[]{1, 1, 1, 1, 1});
 		controller.recordScore(YahtzeeCategory.CHANCE, new int[]{1, 1, 1, 1, 1});
 		
@@ -284,12 +275,10 @@ class YahtzeeTests {
 	
 	@Test
 	void testBonusYahtzeeValid() {
-		// First score a yahtzee
 		int[] yahtzee = {5, 5, 5, 5, 5};
 		controller.recordScore(YahtzeeCategory.YAHTZEE, yahtzee);
 		controller.recordScore(YahtzeeCategory.ONES, new int[]{1, 2, 3, 4, 5});
 		
-		// Roll another yahtzee
 		assertTrue(controller.recordBonusYahtzee(yahtzee));
 	}
 	
@@ -318,9 +307,7 @@ class YahtzeeTests {
 		int[] notYahtzee = {1, 2, 3, 4, 5};
 		assertFalse(controller.recordBonusYahtzee(notYahtzee));
 	}
-	
-	// ========== GAME STATE TESTS ==========
-	
+		
 	@Test
 	void testGameNotOverInitially() {
 		assertFalse(controller.isGameOver());
@@ -341,12 +328,9 @@ class YahtzeeTests {
 	
 	@Test
 	void testGetWinnerPlayer1() {
-		// Player 1 scores high
 		controller.recordScore(YahtzeeCategory.YAHTZEE, new int[]{6, 6, 6, 6, 6});
-		// Player 2 scores low
 		controller.recordScore(YahtzeeCategory.ONES, new int[]{1, 2, 3, 4, 5});
 		
-		// Complete all remaining categories
 		YahtzeeCategory[] categories = YahtzeeCategory.values();
 		int[] dice = {1, 2, 3, 4, 5};
 		
@@ -377,9 +361,7 @@ class YahtzeeTests {
 		assertNotNull(controller.getScorecard());
 		assertEquals(controller.getCurrentPlayer().getScorecard(), controller.getScorecard());
 	}
-	
-	// ========== SAVE/LOAD TESTS ==========
-	
+		
 	@Test
 	void testSaveGame() {
 		controller.recordScore(YahtzeeCategory.ONES, new int[]{1, 1, 1, 2, 3});
@@ -427,13 +409,10 @@ class YahtzeeTests {
 	    assertEquals("Player 1", loadedController.getCurrentPlayer().getName());
 	    assertEquals(3, loadedController.getRollsRemaining());
 	    
-	    // Check that the scores were preserved in the right players
 	    assertFalse(loadedController.getPlayer1().getScorecard().isCategoryAvailable(YahtzeeCategory.ONES));
 	    assertFalse(loadedController.getPlayer2().getScorecard().isCategoryAvailable(YahtzeeCategory.TWOS));
 	}
-	
-	// ========== PLAYER/DIE TESTS ==========
-	
+		
 	@Test
 	void testPlayerGetDiceValues() {
 		int[] values = controller.getCurrentPlayer().getDieValues();
@@ -493,9 +472,7 @@ class YahtzeeTests {
 		int value = die.getValue();
 		assertTrue(value >= 1 && value <= 6);
 	}
-	
-	// ========== SCORECARD DETAIL TESTS ==========
-	
+		
 	@Test
 	void testScorecardGetScores() {
 		controller.recordScore(YahtzeeCategory.ONES, new int[]{1, 1, 1, 2, 3});
@@ -538,7 +515,9 @@ class YahtzeeTests {
 		controller.recordScore(YahtzeeCategory.ONES, new int[]{1, 2, 3, 4, 5});
 		
 		controller.recordBonusYahtzee(yahtzee);
+		controller.recordScore(YahtzeeCategory.YAHTZEE, yahtzee);
+		controller.recordBonusYahtzee(yahtzee);
 		
-		assertEquals(100, controller.getPlayer1().getScorecard().getYahtzeeBonus());
+		assertEquals(200, controller.getPlayer1().getScorecard().getYahtzeeBonus());
 	}
 }
