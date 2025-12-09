@@ -1,4 +1,5 @@
 /**
+<<<<<<< HEAD
  * @author Achilles Soto
  * @author Charlie Cain
  * @author Luke Zeman
@@ -9,8 +10,6 @@
  */
 package main;
 
-import java.lang.management.ManagementFactory;
-
 import javafx.application.Application;
 import view.BoardGamesView;
 
@@ -19,6 +18,10 @@ import view.BoardGamesView;
  */
 public class SuperAwesomeGames {
 
+	/**
+	 * Starts this program
+	 * @param args : a String[] that is meant for command line arguments
+	 */
 	public static void main(String[] args) {
 		Application.launch(BoardGamesView.class, args);
 	}

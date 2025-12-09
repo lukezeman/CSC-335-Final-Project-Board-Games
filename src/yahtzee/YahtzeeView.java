@@ -216,7 +216,7 @@ public class YahtzeeView implements Observer {
 		button.setFont(Font.font("System", 20));
 
 		button.setOnAction(e -> {
-			int[] values = model.rollDice();
+			int[] values = controller.rollDice();
 			button.setDisable(true);
 			for (int i = 0; i < 5; i++) {
 				diceViews[i].setVisible(true);
@@ -509,8 +509,9 @@ public class YahtzeeView implements Observer {
 		Menu file = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem rules = new MenuItem("How To Play");
-		MenuItem exit = new MenuItem("Exit to Main Menu");
-		file.getItems().addAll(newGame, rules, new SeparatorMenuItem(), exit);
+		MenuItem exitNoSave = new MenuItem("Exit Without Saving");
+		MenuItem exit = new MenuItem("Save And Exit");
+		file.getItems().addAll(newGame, rules, new SeparatorMenuItem(), exitNoSave, new SeparatorMenuItem(), exit);
 		menuBar.getMenus().add(file);
 
 		newGame.setOnAction(event -> {
@@ -529,6 +530,10 @@ public class YahtzeeView implements Observer {
 			if (!controller.isGameOver()) {
 				controller.saveGame();
 			}
+			mainMenu.exitToMenu();
+		});
+		
+		exitNoSave.setOnAction(event -> {
 			mainMenu.exitToMenu();
 		});
 

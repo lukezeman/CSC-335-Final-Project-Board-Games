@@ -1,3 +1,7 @@
+/**
+ * 
+ */
+
 package checkers;
 
 import java.io.File;
@@ -29,6 +33,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import view.BoardGamesView;
+import view.PlayerNamingScreen;
 
 @SuppressWarnings("deprecation")
 public class CheckersView implements Observer {
@@ -50,6 +55,10 @@ public class CheckersView implements Observer {
 	
 	private Scene scene;
 	
+	/**
+	 * 
+	 * @param menuView
+	 */
 	public CheckersView(BoardGamesView menuView) {
 		this.menuView = menuView;
 		this.player1 = "Player 1";
@@ -58,7 +67,12 @@ public class CheckersView implements Observer {
 		startGame();
 	}
 	
-	
+	/**
+	 * 
+	 * @param menuView
+	 * @param name1
+	 * @param name2
+	 */
 	public CheckersView(BoardGamesView menuView, String name1, String name2) {
 		this.menuView = menuView;
 		this.player1 = name1;
@@ -66,8 +80,7 @@ public class CheckersView implements Observer {
 		scene = setupScene();
 		startGame();
 	}
-
-
+	
 	/*
 	 * When making your GUI, instead of setting up a stage and stuff, just
 	 * set up the scene you want in here and the BoardGamesView class will 
@@ -158,10 +171,8 @@ public class CheckersView implements Observer {
 		MenuItem noSaveExit = new MenuItem("Exit without Saving");
 		// Start a new game when the item is pressed
 		newGame.setOnAction(e -> {
-			if (!controller.isGameOver()) {
-				deleteSave();
-				startGame();
-			}
+			deleteSave();
+			PlayerNamingScreen.namingScreen(menuView, "Checkers");
 		});
 		// Saves and exits the game when the item is pressed
 		saveExit.setOnAction(e ->{
@@ -331,6 +342,9 @@ public class CheckersView implements Observer {
 		clearSelectedMoves(newBoardState);
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	/**
 	 * 

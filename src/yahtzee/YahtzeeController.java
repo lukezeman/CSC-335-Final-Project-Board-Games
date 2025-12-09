@@ -7,51 +7,51 @@ public class YahtzeeController {
 		this.model = model;
 	}
 	
-	protected int[] rollDice() {
+	public int[] rollDice() {
 		return model.rollDice();
 	}
 	
-	protected void recordScore(YahtzeeCategory category, int[] dice) {
+	public void recordScore(YahtzeeCategory category, int[] dice) {
 		model.recordScore(category, dice);
 	}
 	
-	protected boolean recordBonusYahtzee(int[] dice) {
+	public boolean recordBonusYahtzee(int[] dice) {
 		return model.recordBonusYahtzee(dice);
 	}
 	
-	protected boolean isGameOver() {
+	public boolean isGameOver() {
 		return model.isGameOver();
 	}
 	
-	protected YahtzeePlayer getCurrentPlayer() {
+	public YahtzeePlayer getCurrentPlayer() {
 		return model.getCurrentPlayer();
 	}
 	
-	protected int getRollsRemaining() {
+	public int getRollsRemaining() {
 		return model.getRollsRemaining();
 	}
 	
-	protected YahtzeePlayer getWinner() {
+	public YahtzeePlayer getWinner() {
 		return model.getWinner();
 	}
 	
-	protected YahtzeeScorecard getScorecard() {
+	public YahtzeeScorecard getScorecard() {
 		return model.getScorecard();
 	}
 	
-	protected YahtzeePlayer getPlayer1() {
+	public YahtzeePlayer getPlayer1() {
 		return model.getPlayer1();
 	}
 	
-	protected YahtzeePlayer getPlayer2() {
+	public YahtzeePlayer getPlayer2() {
 		return model.getPlayer2();
 	}
 	
-	protected boolean isCategoryAvailable(YahtzeeCategory category) {
+	public boolean isCategoryAvailable(YahtzeeCategory category) {
 		return model.isCategoryAvailable(category);
 	}
 	
-	protected void saveGame() {
+	public void saveGame() {
 		model.saveGame();
 	}
 }

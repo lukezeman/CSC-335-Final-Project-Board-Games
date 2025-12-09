@@ -17,7 +17,7 @@ public class YahtzeePlayer implements Serializable {
 		}
 	}
 	
-	protected void rollAll() {
+	public void rollAll() {
 		for (YahtzeeDie die : dice) {
 			if (!die.isHeld()) {
 				die.roll();
@@ -25,7 +25,7 @@ public class YahtzeePlayer implements Serializable {
 		}
 	}
 	
-	protected int[] getDieValues() {
+	public int[] getDieValues() {
 		int[] values = new int[5];
 		for (int i = 0; i < 5; i++) {
 			values[i] = dice[i].getValue();
@@ -34,15 +34,15 @@ public class YahtzeePlayer implements Serializable {
 		return values;
 	}
 	
-	protected String getName() {
+	public String getName() {
 		return name;
 	}
 	
-	protected YahtzeeScorecard getScorecard() {
+	public YahtzeeScorecard getScorecard() {
 		return scorecard;
 	}
 	
-	protected YahtzeeDie[] getDice() {
+	public YahtzeeDie[] getDice() {
 		return dice;
 	}
 	
