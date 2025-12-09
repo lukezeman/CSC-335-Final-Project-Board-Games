@@ -72,7 +72,7 @@ public class Connect4Instance implements Serializable {
 				
 	}
 	
-	/*
+	/**
 	 * Loads in a Connect4 game from a .dat file if it exists, returning the Connect4Instance object
 	 * @return the board game object, ReversiBoard
 	 */
@@ -88,5 +88,4 @@ public class Connect4Instance implements Serializable {
 		// File doesn't exist
 		return null;
 	}
-
 }
