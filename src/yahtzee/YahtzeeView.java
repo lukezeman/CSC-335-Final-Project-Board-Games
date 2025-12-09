@@ -143,7 +143,6 @@ public class YahtzeeView implements Observer {
 
 		scene = new Scene(borderPane, 500, 800);
 		stage.setScene(scene);
-		stage.setTitle("Yahtzee");
 		stage.show();
 		stage.centerOnScreen();
 
