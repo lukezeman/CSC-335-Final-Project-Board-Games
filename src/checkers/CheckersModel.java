@@ -45,7 +45,7 @@ public class CheckersModel extends Observable {
 			try {
 				currInstance = (CheckersInstance) input.readObject();
 				this.board = currInstance.getBoard();
-				this.selectedLegalMoves = currInstance.getSelectedPossibleMoves();
+				this.selectedLegalMoves = currInstance.getSelectedLegalMoves();
 				this.selectedIndex = currInstance.getSelectedIndex();
 				this.movedIndex = currInstance.getMovedIndex();
 				this.isPlayerOnesTurn = currInstance.isPlayerOnesTurn();
