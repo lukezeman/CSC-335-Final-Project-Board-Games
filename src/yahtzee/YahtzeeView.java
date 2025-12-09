@@ -1,3 +1,13 @@
+/**
+ * @author Luke Zeman
+ * Assignment: CSC 335 Team Project
+ * File: YahtzeeView.java
+ * Date: 12/08/2025
+ * 
+ * Description: This class represents the view component of the Yahtzee game. It implements
+ * 			 	the Observer interface to update the UI based on changes in the YahtzeeModel.
+ */
+
 package yahtzee;
 
 import view.BoardGamesView;
@@ -40,6 +50,9 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 
+/**
+ * This class represents the view component of the Yahtzee game.
+ */
 @SuppressWarnings("deprecation")
 public class YahtzeeView implements Observer {
 	private BoardGamesView mainMenu;
@@ -60,6 +73,11 @@ public class YahtzeeView implements Observer {
 	private Label infoLabel;
 	private File saveFile = new File("save_yahtzee.dat");
 
+	/**
+	 * Constructor for loading a saved Yahtzee game.
+	 * 
+	 * @param mainMenu - The main menu view to return to after the game.
+	 */
 	public YahtzeeView(BoardGamesView mainMenu) {
 		this.mainMenu = mainMenu;
 		this.stage = mainMenu.getStage();
@@ -74,6 +92,13 @@ public class YahtzeeView implements Observer {
 
 	}
 
+	/**
+	 * Constructor for starting a new Yahtzee game.
+	 * 
+	 * @param mainMenu - The main menu view to return to after the game.
+	 * @param player1  - The name of player 1.
+	 * @param player2  - The name of player 2.
+	 */
 	public YahtzeeView(BoardGamesView mainMenu, String player1, String player2) {
 		this.mainMenu = mainMenu;
 		this.stage = mainMenu.getStage();
@@ -85,6 +110,13 @@ public class YahtzeeView implements Observer {
 		setupUI(player1, player2, null);
 	}
 
+	/**
+	 * Sets up the user interface for the Yahtzee game.
+	 * 
+	 * @param player1Name - The name of player 1 (null if loading a game).
+	 * @param player2Name - The name of player 2 (null if loading a game).
+	 * @param loadedGame  - The loaded YahtzeeInstance (null if starting a new game).
+	 */
 	private void setupUI(String player1Name, String player2Name, YahtzeeInstance loadedGame) {
 		if (loadedGame == null) {
 			model = new YahtzeeModel(player1Name, player2Name);
@@ -122,6 +154,9 @@ public class YahtzeeView implements Observer {
 		});
 	}
 
+	/**
+	 * Sets up the dice area and menu bar.
+	 */
 	private void setupDiceandMenu() {
 		VBox top = new VBox();
 		HBox diceArea = new HBox(20);
@@ -167,6 +202,11 @@ public class YahtzeeView implements Observer {
 		borderPane.setTop(top);
 	}
 
+	/**
+	 * Toggles the hold status of a die at the specified index.
+	 * 
+	 * @param index - The index of the die to toggle hold status.
+	 */
 	private void toggleHold(int index) {
 		YahtzeeDie die = controller.getCurrentPlayer().getDice()[index];
 		die.toggleHold();
@@ -175,6 +215,12 @@ public class YahtzeeView implements Observer {
 
 	}
 
+	/**
+	 * Animates the rolling of a die at the specified index to its final value.
+	 * 
+	 * @param dieIndex   - The index of the die to animate.
+	 * @param finalValue - The final value of the die after rolling.
+	 */
 	private void animateDiceRoll(int dieIndex, int finalValue) {
 		ImageView dieView = diceViews[dieIndex];
 
@@ -194,6 +240,11 @@ public class YahtzeeView implements Observer {
 		timeline.play();
 	}
 
+	/**
+	 * Checks if all dice are currently held.
+	 * 
+	 * @return true if all dice are held, false otherwise.
+	 */
 	private boolean checkAllHeld() {
 		for (int i = 0; i < 5; i++) {
 			if (!holdIndicators[i].isVisible()) {
@@ -204,6 +255,9 @@ public class YahtzeeView implements Observer {
 		return true;
 	}
 
+	/**
+	 * Sets up the roll button and information label.
+	 */
 	private void setupButtonAndLabel() {
 		VBox vBox = new VBox(10);
 		infoLabel = new Label(controller.getCurrentPlayer().getName() + "'s Turn! Click Roll!");
@@ -229,6 +283,7 @@ public class YahtzeeView implements Observer {
 			player2Pane.setDisable(true);
 			infoLabel.setText("");
 
+			// Disable button, holds, and scorecards for 1 second to allow animation to finish.
 			Timeline enable = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
 				if (controller.getRollsRemaining() == 0) {
 					button.setDisable(true);
@@ -259,35 +314,38 @@ public class YahtzeeView implements Observer {
 		borderPane.setCenter(vBox);
 	}
 
+	/**
+	 * Sets up the scorecards for both players.
+	 */
 	private void setupScorecards() {
 		String[] categories = { "PLAYER", "UPPER SECTION", "Ones", "Twos", "Threes", "Fours", "Fives", "Sixes",
 				"TOTAL SCORE", "BONUS", "TOTAL", "LOWER SECTION", "3 of a kind", "4 of a kind", "Full House",
 				"Sm. Straight", "Lg. Straight", "YAHTZEE", "Chance", "YAHTZEE BONUS", "TOTAL UPPER", "TOTAL LOWER",
 				"GRAND TOTAL" };
 
-		categoryMapping[0] = null; // 0: PLAYER
-		categoryMapping[1] = null; // 1: UPPER SECTION
-		categoryMapping[2] = YahtzeeCategory.ONES; // 2: Ones
-		categoryMapping[3] = YahtzeeCategory.TWOS; // 3: Twos
-		categoryMapping[4] = YahtzeeCategory.THREES; // 4: Threes
-		categoryMapping[5] = YahtzeeCategory.FOURS; // 5: Fours
-		categoryMapping[6] = YahtzeeCategory.FIVES; // 6: Fives
-		categoryMapping[7] = YahtzeeCategory.SIXES; // 7: Sixes
-		categoryMapping[8] = null; // 8: TOTAL SCORE
-		categoryMapping[9] = null; // 9: BONUS
-		categoryMapping[10] = null; // 10: TOTAL
-		categoryMapping[11] = null; // 11: LOWER SECTION
-		categoryMapping[12] = YahtzeeCategory.THREE_OF_A_KIND;// 12: 3 of a kind
-		categoryMapping[13] = YahtzeeCategory.FOUR_OF_A_KIND; // 13: 4 of a kind
-		categoryMapping[14] = YahtzeeCategory.FULL_HOUSE; // 14: Full House
-		categoryMapping[15] = YahtzeeCategory.SMALL_STRAIGHT; // 15: Sm. Straight
-		categoryMapping[16] = YahtzeeCategory.LARGE_STRAIGHT; // 16: Lg. Straight
-		categoryMapping[17] = YahtzeeCategory.YAHTZEE; // 17: YAHTZEE
-		categoryMapping[18] = YahtzeeCategory.CHANCE; // 18: Chance
-		categoryMapping[19] = null; // 19: YAHTZEE BONUS
-		categoryMapping[20] = null; // 20: TOTAL UPPER
-		categoryMapping[21] = null; // 21: TOTAL LOWER
-		categoryMapping[22] = null; // 22: GRAND TOTAL
+		categoryMapping[0] = null;
+		categoryMapping[1] = null;
+		categoryMapping[2] = YahtzeeCategory.ONES;
+		categoryMapping[3] = YahtzeeCategory.TWOS;
+		categoryMapping[4] = YahtzeeCategory.THREES;
+		categoryMapping[5] = YahtzeeCategory.FOURS;
+		categoryMapping[6] = YahtzeeCategory.FIVES;
+		categoryMapping[7] = YahtzeeCategory.SIXES;
+		categoryMapping[8] = null;
+		categoryMapping[9] = null;
+		categoryMapping[10] = null;
+		categoryMapping[11] = null;
+		categoryMapping[12] = YahtzeeCategory.THREE_OF_A_KIND;
+		categoryMapping[13] = YahtzeeCategory.FOUR_OF_A_KIND;
+		categoryMapping[14] = YahtzeeCategory.FULL_HOUSE;
+		categoryMapping[15] = YahtzeeCategory.SMALL_STRAIGHT;
+		categoryMapping[16] = YahtzeeCategory.LARGE_STRAIGHT;
+		categoryMapping[17] = YahtzeeCategory.YAHTZEE;
+		categoryMapping[18] = YahtzeeCategory.CHANCE;
+		categoryMapping[19] = null;
+		categoryMapping[20] = null;
+		categoryMapping[21] = null;
+		categoryMapping[22] = null;
 
 		player1Pane = new GridPane();
 		player2Pane = new GridPane();
@@ -300,7 +358,7 @@ public class YahtzeeView implements Observer {
 				label1.setPrefSize(100, 25);
 				label1.setPadding(new Insets(0, 0, 0, 2));
 
-				// Add border to label1
+				// Add border to label1.
 				label1.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
 						new BorderWidths(0.5))));
 
@@ -310,7 +368,7 @@ public class YahtzeeView implements Observer {
 				label2.setPrefSize(100, 25);
 				label2.setPadding(new Insets(0, 0, 0, 2));
 
-				// Add border to label2
+				// Add border to label2.
 				label2.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
 						new BorderWidths(0.5))));
 
@@ -382,6 +440,12 @@ public class YahtzeeView implements Observer {
 		player2Pane.setDisable(true);
 	}
 
+	/**
+	 * Handles the click event for scoring a category.
+	 * 
+	 * @param category - The YahtzeeCategory to score.
+	 * @param scoreLabel - The Label representing the score for the category.
+	 */
 	private void handleScoreClick(YahtzeeCategory category, Label scoreLabel) {
 		if (!controller.isCategoryAvailable(category)) {
 			Alert a = new Alert(Alert.AlertType.ERROR);
@@ -399,6 +463,11 @@ public class YahtzeeView implements Observer {
 		scoreLabel.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
+	/**
+	 * Handles the click event for scoring a Yahtzee bonus.
+	 * 
+	 * @param scoreLabel - The Label representing the score for the Yahtzee bonus.
+	 */
 	private void handleYahtzeeBonusClick(Label scoreLabel) {
 		int[] dice = controller.getCurrentPlayer().getDieValues();
 
@@ -411,6 +480,9 @@ public class YahtzeeView implements Observer {
 		}
 	}
 
+	/**
+	 * Updates the GUI based on the score update from the model.
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
@@ -504,6 +576,11 @@ public class YahtzeeView implements Observer {
 		
 	}
 
+	/**
+	 * Sets up the menu bar for the Yahtzee game.
+	 * 
+	 * @return The configured MenuBar.
+	 */
 	private MenuBar setupMenu() {
 		MenuBar menuBar = new MenuBar();
 		Menu file = new Menu("File");
@@ -541,6 +618,9 @@ public class YahtzeeView implements Observer {
 
 	}
 
+	/**
+	 * Displays the "How to Play" rules in a new window.
+	 */
 	private void showHowToPlay() {
 		Stage howToStage = new Stage();
 		howToStage.setTitle("How to play YAHTZEE!");
@@ -579,8 +659,11 @@ public class YahtzeeView implements Observer {
 		howToStage.show();
 	}
 
+	/**
+	 * Loads the scorecard from a saved game into the UI.
+	 */
 	private void loadScorecard() {
-		// Load player 1's scores
+		// Load player 1's scores.
 		HashMap<YahtzeeCategory, Integer> player1Scores = controller.getPlayer1().getScorecard().getScores();
 		for (int i = 0; i < categoryMapping.length; i++) {
 			if (categoryMapping[i] != null && player1Scores.containsKey(categoryMapping[i])) {
@@ -590,7 +673,7 @@ public class YahtzeeView implements Observer {
 			}
 		}
 
-		// Load player 2's scores
+		// Load player 2's scores.
 		HashMap<YahtzeeCategory, Integer> player2Scores = controller.getPlayer2().getScorecard().getScores();
 		for (int i = 0; i < categoryMapping.length; i++) {
 			if (categoryMapping[i] != null && player2Scores.containsKey(categoryMapping[i])) {
@@ -600,15 +683,21 @@ public class YahtzeeView implements Observer {
 			}
 		}
 
-		// Update player names
+		// Update player names.
 		categoryLabels1[0].setText(controller.getPlayer1().getName());
 		categoryLabels2[0].setText(controller.getPlayer2().getName());
 
-		// Update totals/bonuses if applicable
+		// Update totals/bonuses if applicable.
 		updateTotals(controller.getPlayer1(), categoryLabels1);
 		updateTotals(controller.getPlayer2(), categoryLabels2);
 	}
 
+	/**
+	 * Updates the total scores and bonuses for a player in the UI.
+	 * 
+	 * @param player - The YahtzeePlayer whose totals to update.
+	 * @param labels - The array of Labels representing the scorecard UI.
+	 */
 	private void updateTotals(YahtzeePlayer player, Label[] labels) {
 		YahtzeeScorecard scorecard = player.getScorecard();
 
@@ -625,6 +714,11 @@ public class YahtzeeView implements Observer {
 		}
 	}
 
+	/**
+	 * Returns the current scene of the Yahtzee game.
+	 * 
+	 * @return The current Scene.
+	 */
 	public Scene getScene() {
 		return scene;
 	}
