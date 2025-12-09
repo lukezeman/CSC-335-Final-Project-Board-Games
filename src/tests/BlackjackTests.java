@@ -23,6 +23,7 @@ class BlackjackTests {
     
     
     
+    
     @Test
     public void testGetSuit() {
     	aceOfSpades = new Card("Spades", "Ace", 11);
