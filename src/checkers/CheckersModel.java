@@ -1,3 +1,7 @@
+/**
+ * 
+ */
+
 package checkers;
 
 import java.io.IOException;
@@ -34,7 +38,9 @@ public class CheckersModel extends Observable {
 	 * @param player2
 	 */
 	public CheckersModel(CheckersView view, ObjectInputStream input, String player1, String player2) {
-		addObserver(view);
+		if (view != null) {
+			addObserver(view);
+		}
 		if (input != null) {
 			try {
 				currInstance = (CheckersInstance) input.readObject();
@@ -77,6 +83,8 @@ public class CheckersModel extends Observable {
 		
 		setUpDefaultBoardState();
 		
+		currInstance.setPlayerOneLegalMoves(playerOneLegalMoves);
+		currInstance.setPlayerTwoLegalMoves(playerTwoLegalMoves);
 		currInstance.setPlayerOneLegalCaptures(playerOneLegalCaptures);
 		currInstance.setPlayerTwoLegalCaptures(playerTwoLegalCaptures);
 		currInstance.setIsPlayerOnesTurn(isPlayerOnesTurn);
@@ -283,7 +291,12 @@ public class CheckersModel extends Observable {
  		processInput(xPos, yPos, currPlayerLegalCaptures);
 	}
  	
- 	
+ 	/**
+ 	 * 
+ 	 * @param xPos
+ 	 * @param yPos
+ 	 * @param legalCaptures
+ 	 */
  	private void processInput(int xPos, int yPos, HashMap<ArrayList<Integer>, ArrayList<int[]>> legalCaptures) {
  		if (isOwnedPiece(xPos, yPos, isPlayerOnesTurn)) {
 			/*
@@ -309,7 +322,6 @@ public class CheckersModel extends Observable {
 				removeNonMovedPieceLegalCaptures();
 			} else {
 				swapPlayer();
-				
 			}
 			
 			setChanged();
@@ -346,6 +358,7 @@ public class CheckersModel extends Observable {
 		} else {
 			this.selectedLegalMoves = playerTwoLegalMoves.get(selectedKey);
 		}
+		
 		
 		filterLegalMoves(selectedKey, legalCaptures);
 		
@@ -607,7 +620,9 @@ public class CheckersModel extends Observable {
 		playerTwoLegalCaptures.clear();
 	}
 	
-	
+	/**
+	 * 
+	 */
 	private void removeNonMovedPieceLegalCaptures() {
 		ArrayList<Integer> keyVal = new ArrayList<>();
 		keyVal.add(movedIndex[0]);
@@ -639,10 +654,18 @@ public class CheckersModel extends Observable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public HashMap<ArrayList<Integer>, int[][]> getPlayerOneLegalMoves(){
 		return playerOneLegalMoves;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public HashMap<ArrayList<Integer>, int[][]> getPlayerTwoLegalMoves(){
 		return playerTwoLegalMoves;
 	}
