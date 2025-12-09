@@ -73,7 +73,7 @@ public class CheckersInstance implements Serializable{
 	 * 
 	 * @return
 	 */
-	public int[][] getSelectedPossibleMoves(){
+	public int[][] getSelectedLegalMoves(){
 		return selectedLegalMoves;
 	}
 	

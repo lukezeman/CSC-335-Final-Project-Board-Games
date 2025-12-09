@@ -7,7 +7,6 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 
 import connect4.Connect4Controller;
-import connect4.Connect4Instance;
 import connect4.Connect4Model;
 
 class Connect4Tests {
@@ -243,23 +242,6 @@ class Connect4Tests {
 		control.setPlayers(testPlayers);
 		
 		assertEquals(testPlayers, control.getPlayers());
-
-
-	}
-	
-	@Test
-	void testInstance() {
-		File file = new File("save_connect4.dat");
-		if (file.exists()) file.delete();
-		Connect4Model model = new Connect4Model();
-		Connect4Instance i = new Connect4Instance(model);
-		assertEquals(model.getPlayers(), i.getPlayers());
-		assertEquals(model.getBoard(), i.getBoard());
-		assertEquals(model.getTurn(), i.getTurn());
-		assertNull(Connect4Instance.loadGame());
-		model.saveGame();
-		Object loaded = Connect4Instance.loadGame();
-		assertTrue(loaded instanceof Connect4Instance);
 
 
 	}

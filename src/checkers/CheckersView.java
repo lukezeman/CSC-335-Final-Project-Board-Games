@@ -1,5 +1,8 @@
 /**
- * 
+ * Creates a Scene object for the checkers game and passes it to the main view.
+ * It also speaks to the checkers controller, so this class effectively becomes
+ * the main View piece while this game is being played
+ * @Author: Charlie Cain.
  */
 
 package checkers;
@@ -56,8 +59,8 @@ public class CheckersView implements Observer {
 	private Scene scene;
 	
 	/**
-	 * 
-	 * @param menuView
+	 * Constructs an instance of the CheckersView class
+	 * @param menuView: A reference to the main View class
 	 */
 	public CheckersView(BoardGamesView menuView) {
 		this.menuView = menuView;
@@ -270,7 +273,7 @@ public class CheckersView implements Observer {
 	 * @param xPos: The x-coordinate of the pixel the user clicked.
 	 * @param yPos: The y-coordinate of the pixel the user clicked.
 	 */
-	public void handleUserInput(double xPos, double yPos) {
+	private void handleUserInput(double xPos, double yPos) {
 		// 8=6 pixel offset + 1 pixel border + 1. 30 is just best guess for offset
 		if (xPos > 8 && yPos > 34 && xPos - 8 < 66 * gridLength && yPos - 34 < 66 * gridLength) {
 			// Remove 8 pixel offset from boundary and make first valid pixel 0
@@ -399,9 +402,9 @@ public class CheckersView implements Observer {
 	 * whenever a new owned piece was clicked by the current player or when the
 	 * player moves a piece.
 	 */
-	public void clearSelectedMoves(CheckersInstance newBoardState) {
+	private void clearSelectedMoves(CheckersInstance newBoardState) {
 		int[][] board = newBoardState.getBoard();
-		int[][] selectedPossibleMoves = newBoardState.getSelectedPossibleMoves();
+		int[][] selectedPossibleMoves = newBoardState.getSelectedLegalMoves();
 		
 		int rowVal;
 		int colVal;
@@ -433,11 +436,11 @@ public class CheckersView implements Observer {
 			break;
 		case 2:
 			modifiedSquare.setCheckersPiece(true);
-			modifiedSquare.promotePiece();
+			modifiedSquare.promote();
 			break;
 		case -2:
 			modifiedSquare.setCheckersPiece(false);
-			modifiedSquare.promotePiece();
+			modifiedSquare.promote();
 			break;
 		case 3:
 			modifiedSquare.setPotentialMove(true);
