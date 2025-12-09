@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * @author Achilles Soto
  * @author Charlie Cain
  * @author Luke Zeman
