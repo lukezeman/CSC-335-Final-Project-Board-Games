@@ -43,7 +43,7 @@ public class CheckersView implements Observer {
 
 	private BoardGamesView menuView;
 	private CheckersInstance currInstance;
-	
+
 	private static final int gridLength = 8;
 
 	private CheckersController controller;
@@ -55,11 +55,12 @@ public class CheckersView implements Observer {
 	private BoardSquare[][] cellPanes;
 
 	private Label playerTurnTracker;
-	
+
 	private Scene scene;
-	
+
 	/**
 	 * Constructs an instance of the CheckersView class
+	 * 
 	 * @param menuView: A reference to the main View class
 	 */
 	public CheckersView(BoardGamesView menuView) {
@@ -69,12 +70,14 @@ public class CheckersView implements Observer {
 		scene = setupScene();
 		startGame();
 	}
-	
+
 	/**
+	 * Constructs an instance of the CheckersView class with names for player 1 and
+	 * player 2.
 	 * 
-	 * @param menuView
-	 * @param name1
-	 * @param name2
+	 * @param menuView: A reference to the main View class
+	 * @param name1:    The name of player one
+	 * @param name2:    The name of player two
 	 */
 	public CheckersView(BoardGamesView menuView, String name1, String name2) {
 		this.menuView = menuView;
@@ -83,12 +86,11 @@ public class CheckersView implements Observer {
 		scene = setupScene();
 		startGame();
 	}
-	
-	/*
-	 * When making your GUI, instead of setting up a stage and stuff, just
-	 * set up the scene you want in here and the BoardGamesView class will 
-	 * handle displaying this to the screen. Feel free to use the exitToMenu
-	 * methods in the menuView, as well as whatever other methods are added
+
+	/**
+	 * Creates a scene object with all the functionality required to play the
+	 * checkers game. Does not create a Stage for itself, but rather just creates
+	 * the scene to put on the stage
 	 */
 	private Scene setupScene() {
 		this.controller = new CheckersController();
@@ -100,7 +102,7 @@ public class CheckersView implements Observer {
 		setUpBottom();
 		// Set up size of the scene in terms of the size of the board
 		Scene gameScene = new Scene(mainWindow, 66 * gridLength + 16, (66 * gridLength + 16) + 40);
-		
+
 		// Process the mouse clicks of the user and add the move it corresponds to
 		gameScene.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -110,11 +112,12 @@ public class CheckersView implements Observer {
 		});
 		return gameScene;
 	}
-	
+
 	/**
-	 * Loads whatever instance of the checkers game is currently saved in the
-	 * file "save_checkers.dat". If the file does not exist, then it will simply 
-	 * return null. Finally, it deletes the file to prevent save corruption issues.
+	 * Loads whatever instance of the checkers game is currently saved in the file
+	 * "save_checkers.dat". If the file does not exist, then it will simply return
+	 * null. Finally, it deletes the file to prevent save corruption issues.
+	 * 
 	 * @return The ObjectInputStream representing the saved game.
 	 */
 	private ObjectInputStream loadSave() {
@@ -131,9 +134,10 @@ public class CheckersView implements Observer {
 		}
 		return save;
 	}
-	
+
 	/**
-	 * 
+	 * Stores the current CheckersInstance object into the file "save_checkers.dat"
+	 * as an ObjectOutputStream
 	 */
 	private void saveGame() {
 		try {
@@ -144,10 +148,10 @@ public class CheckersView implements Observer {
 			return;
 		}
 	}
-	
+
 	/**
-	 * Deletes whatever saved instance of the game currently exists. This is typically
-	 * done once a game is finished or a new save is instanciated.
+	 * Deletes whatever saved instance of the game currently exists. This is
+	 * typically done once a game is finished or a new save is instanciated.
 	 */
 	private void deleteSave() {
 		File currSave = new File("save_checkers.dat");
@@ -155,14 +159,14 @@ public class CheckersView implements Observer {
 			currSave.delete();
 		}
 	}
-	
+
 	/**
 	 * Sets the top bar of the main window
 	 * <p>
-	 * Creates a bar menu item collection with a single menu item, which begins a
-	 * new game and erases the current game, as well as any saved games. It then
-	 * sets this to the top of our BorderPane object serving as the GUI's main
-	 * window.
+	 * Creates a bar menu item collection with three menu items, allowing you to
+	 * start a new game, save and exit, or exit without saving. If the game is over,
+	 * then pressing the button to exit while saving will just delete the file
+	 * again.
 	 */
 	private void setUpTop() {
 
@@ -178,7 +182,7 @@ public class CheckersView implements Observer {
 			PlayerNamingScreen.namingScreen(menuView, "Checkers");
 		});
 		// Saves and exits the game when the item is pressed
-		saveExit.setOnAction(e ->{
+		saveExit.setOnAction(e -> {
 			if (!controller.isGameOver()) {
 				saveGame();
 			} else {
@@ -187,11 +191,11 @@ public class CheckersView implements Observer {
 			menuView.exitToMenu();
 		});
 		// Deletes the current save and exits the game when the item is pressed
-		noSaveExit.setOnAction(e ->{
+		noSaveExit.setOnAction(e -> {
 			deleteSave();
 			menuView.exitToMenu();
 		});
-		
+
 		// Connect the bar menu item objects to each other and add to top of window
 		menu.getItems().add(newGame);
 		menu.getItems().add(saveExit);
@@ -199,7 +203,7 @@ public class CheckersView implements Observer {
 		bar.getMenus().add(menu);
 		mainWindow.setTop(bar);
 	}
-	
+
 	/**
 	 * Sets up the main checkers board
 	 * <p>
@@ -233,27 +237,30 @@ public class CheckersView implements Observer {
 		StackPane boardHolder = new StackPane();
 		boardHolder.getChildren().add(gameGrid);
 		boardHolder.setAlignment(Pos.CENTER);
-		boardHolder.setBackground(new Background(new BackgroundFill(Color.rgb(216, 179, 126)
-				, CornerRadii.EMPTY, Insets.EMPTY)));
+		boardHolder.setBackground(
+				new Background(new BackgroundFill(Color.rgb(216, 179, 126), CornerRadii.EMPTY, Insets.EMPTY)));
 		gameGrid.setStyle("-fx-border-color: black; -fx-border-width: 1;");
 		mainWindow.setCenter(boardHolder);
 	}
-	
+
 	/**
+	 * Sets up a BoardSquare object to place in the GridPane object at row/col
+	 * location rowNum/colNum
 	 * 
-	 * @param rowNum
-	 * @param colNum
-	 * @return
+	 * @param rowNum: the row location this piece is going in
+	 * @param colNum: the column location this piece is going to
+	 * @return the BoardSquare constructed for this location
 	 */
 	private BoardSquare setupCurrPiece(int rowNum, int colNum) {
-		// I shamelessly googled this thing because I don't know CSS strings :(
 		if ((rowNum + colNum) % 2 == 0) {
+			// Dark brown
 			return new BoardSquare("#d8b37e", 66);
 		} else {
+			// Lighter brown
 			return new BoardSquare("#986f4f", 66);
 		}
 	}
-	
+
 	/**
 	 * adds a label that tracks the score of the white pieces and the black pieces
 	 */
@@ -261,7 +268,7 @@ public class CheckersView implements Observer {
 		playerTurnTracker = new Label(player1 + "'s Turn");
 		mainWindow.setBottom(playerTurnTracker);
 	}
-	
+
 	/**
 	 * Processes the user's click
 	 * <p>
@@ -287,7 +294,7 @@ public class CheckersView implements Observer {
 			}
 		}
 	}
-	
+
 	/**
 	 * Displays an error message to the app via an ERROR-type Alert. Solely used for
 	 * testing, and should never be called during expected gameplay.
@@ -302,27 +309,32 @@ public class CheckersView implements Observer {
 		userBlocker.setContentText(errorMessage);
 		userBlocker.showAndWait();
 	}
-	
+
 	/**
-	 * 
+	 * Starts the game, passing the saved data from "checkers_save.dat"
 	 */
 	private void startGame() {
 		ObjectInputStream savedGame = loadSave();
 		controller.startGame(this, savedGame, player1, player2);
 	}
-	
+
 	/**
+	 * Checks whether the passed array is equal to the value {-1, -1}, which is the
+	 * null location, or not.
 	 * 
-	 * @param selectedIndex
-	 * @return
+	 * @param selectedIndex: The array whose location is being checked.
+	 * @return: Whether the value equals th null location
 	 */
 	private boolean isNull(int[] selectedIndex) {
 		return selectedIndex[0] == -1 && selectedIndex[1] == -1;
 	}
-	
+
 	/**
+	 * Moves a piece on the gui from the location the user clicked the piece on to
+	 * the location the user decided to move the piece to.
 	 * 
-	 * @param newBoardState
+	 * @param newBoardState: The CheckersInstance containing the information to
+	 *                       determine the user choices.
 	 */
 	private void movePiece(CheckersInstance newBoardState) {
 		int[][] newBoardGrid = newBoardState.getBoard();
@@ -339,18 +351,16 @@ public class CheckersView implements Observer {
 			int currJumpedVal = newBoardGrid[skippedRowVal][skippedColVal];
 			// Set the square with the jumped piece to be empty
 			setCellPane(cellPanes[skippedRowVal][skippedColVal], currJumpedVal);
-			//TODO Check if the piece that jumped can jump another piece
+			// TODO Check if the piece that jumped can jump another piece
 		}
 		// Remove all the potental move dots from the view
 		clearSelectedMoves(newBoardState);
 	}
-	
-	/**
-	 * 
-	 */
+
 	@Override
 	/**
-	 * 
+	 * Takes the passed CheckersInstance object from the model and uses it to
+	 * update the GUI.
 	 */
 	public void update(Observable o, Object arg) {
 		CheckersInstance newBoardState = (CheckersInstance) arg;
@@ -358,11 +368,13 @@ public class CheckersView implements Observer {
 		this.player1 = currInstance.getPlayer1();
 		this.player2 = currInstance.getPlayer2();
 		boolean isPlayerOnesTurn = currInstance.isPlayerOnesTurn();
+		// Set the bottom text field to accurately determine whose turn it is
 		if (isPlayerOnesTurn) {
 			playerTurnTracker.setText(player1 + "'s Turn");
 		} else {
 			playerTurnTracker.setText(player2 + "'s Turn");
 		}
+		// If a piece has been moved, we can simplify the updating process.
 		if (!isNull(newBoardState.getMovedIndex())) {
 			movePiece(newBoardState);
 		} else {
@@ -375,14 +387,16 @@ public class CheckersView implements Observer {
 				}
 			}
 		}
+		// End the game once the controller determines it's over.
 		if (controller.isGameOver()) {
 			endGame();
 		}
-		
+
 	}
-	
+
 	/**
-	 * 
+	 * Ends the game by showing an alert to the user telling them which
+	 * player won.
 	 */
 	private void endGame() {
 		Alert endGameAlert = new Alert(AlertType.INFORMATION);
@@ -395,8 +409,7 @@ public class CheckersView implements Observer {
 		}
 		endGameAlert.show();
 	}
-	
-	
+
 	/**
 	 * Clears all the selected moves currently on the screen. This should occur
 	 * whenever a new owned piece was clicked by the current player or when the
@@ -405,10 +418,10 @@ public class CheckersView implements Observer {
 	private void clearSelectedMoves(CheckersInstance newBoardState) {
 		int[][] board = newBoardState.getBoard();
 		int[][] selectedPossibleMoves = newBoardState.getSelectedLegalMoves();
-		
+
 		int rowVal;
 		int colVal;
-		for (int[] currPossibleMove: selectedPossibleMoves) {
+		for (int[] currPossibleMove : selectedPossibleMoves) {
 			if (!isNull(currPossibleMove)) {
 				// Clear all the dots from the view since a move was taken
 				rowVal = currPossibleMove[0];
@@ -417,11 +430,13 @@ public class CheckersView implements Observer {
 			}
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param modifiedSquare
-	 * @param currBoardState
+	 * Literally just goes over all possible values the currBoardState could be
+	 * and modifies modifiedSquare accordingly
+	 * @param modifiedSquare: the BoardSquare being modified
+	 * @param currBoardState: an int stating the curr value of the board at the
+	 * index of modifiedSquare.
 	 */
 	private void setCellPane(BoardSquare modifiedSquare, int currBoardState) {
 		switch (currBoardState) {
@@ -453,21 +468,11 @@ public class CheckersView implements Observer {
 		}
 	}
 
-	
+	/**
+	 * Gives the Scene object this class created
+	 * @return this.scene
+	 */
 	public Scene getScene() {
 		return this.scene;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
